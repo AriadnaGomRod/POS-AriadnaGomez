@@ -41,12 +41,12 @@ public class PanelCategoria extends javax.swing.JPanel {
         txtNombreCat = new javax.swing.JTextField();
         btnAgregar = new javax.swing.JButton();
 
-        jPanel1.setBackground(new java.awt.Color(204, 153, 255));
+        jPanel1.setBackground(new java.awt.Color(222, 194, 230));
 
         jPanel3.setBackground(new java.awt.Color(255, 255, 231));
         jPanel3.setPreferredSize(new java.awt.Dimension(467, 324));
 
-        jPanel2.setBackground(new java.awt.Color(204, 153, 255));
+        jPanel2.setBackground(new java.awt.Color(222, 194, 230));
 
         jLabel1.setFont(new java.awt.Font("Verdana", 1, 24)); // NOI18N
         jLabel1.setText("Categoría");
@@ -81,7 +81,7 @@ public class PanelCategoria extends javax.swing.JPanel {
         ));
         jScrollPane1.setViewportView(tablaCategorias);
 
-        btnEditar.setBackground(new java.awt.Color(102, 204, 255));
+        btnEditar.setBackground(new java.awt.Color(105, 229, 255));
         btnEditar.setFont(new java.awt.Font("Verdana", 0, 10)); // NOI18N
         btnEditar.setText("Editar");
         btnEditar.addActionListener(new java.awt.event.ActionListener() {
@@ -99,7 +99,7 @@ public class PanelCategoria extends javax.swing.JPanel {
             }
         });
 
-        jPanel4.setBackground(new java.awt.Color(204, 153, 255));
+        jPanel4.setBackground(new java.awt.Color(222, 194, 230));
 
         jLabel2.setFont(new java.awt.Font("Verdana", 1, 12)); // NOI18N
         jLabel2.setText("Nombre de la categoría:");
