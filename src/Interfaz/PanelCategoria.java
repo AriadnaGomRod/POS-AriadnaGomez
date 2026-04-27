@@ -1,5 +1,11 @@
 package interfaz;
 
+import Dao.CategoriaDAO;
+import Modelo.Categoria;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import java.util.List;
+
 /**
  *
  * @author arigo
@@ -27,13 +33,13 @@ public class PanelCategoria extends javax.swing.JPanel {
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
-        jButton3 = new javax.swing.JButton();
-        jButton5 = new javax.swing.JButton();
+        tablaCategorias = new javax.swing.JTable();
+        btnEditar = new javax.swing.JButton();
+        btnEliminar = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
+        txtNombreCat = new javax.swing.JTextField();
+        btnAgregar = new javax.swing.JButton();
 
         jPanel1.setBackground(new java.awt.Color(204, 153, 255));
 
@@ -62,7 +68,7 @@ public class PanelCategoria extends javax.swing.JPanel {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tablaCategorias.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null},
                 {null, null},
@@ -73,23 +79,23 @@ public class PanelCategoria extends javax.swing.JPanel {
                 "ID", "Categoría"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(tablaCategorias);
 
-        jButton3.setBackground(new java.awt.Color(102, 204, 255));
-        jButton3.setFont(new java.awt.Font("Verdana", 0, 10)); // NOI18N
-        jButton3.setText("Editar");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
+        btnEditar.setBackground(new java.awt.Color(102, 204, 255));
+        btnEditar.setFont(new java.awt.Font("Verdana", 0, 10)); // NOI18N
+        btnEditar.setText("Editar");
+        btnEditar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
+                btnEditarActionPerformed(evt);
             }
         });
 
-        jButton5.setBackground(new java.awt.Color(255, 102, 102));
-        jButton5.setFont(new java.awt.Font("Verdana", 0, 10)); // NOI18N
-        jButton5.setText("Eliminar");
-        jButton5.addActionListener(new java.awt.event.ActionListener() {
+        btnEliminar.setBackground(new java.awt.Color(255, 102, 102));
+        btnEliminar.setFont(new java.awt.Font("Verdana", 0, 10)); // NOI18N
+        btnEliminar.setText("Eliminar");
+        btnEliminar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton5ActionPerformed(evt);
+                btnEliminarActionPerformed(evt);
             }
         });
 
@@ -98,9 +104,14 @@ public class PanelCategoria extends javax.swing.JPanel {
         jLabel2.setFont(new java.awt.Font("Verdana", 1, 12)); // NOI18N
         jLabel2.setText("Nombre de la categoría:");
 
-        jTextField1.setText("jTextField1");
+        txtNombreCat.setText("jTextField1");
 
-        jButton1.setText("Agregar");
+        btnAgregar.setText("Agregar");
+        btnAgregar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAgregarActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -110,9 +121,9 @@ public class PanelCategoria extends javax.swing.JPanel {
                 .addGap(15, 15, 15)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jTextField1))
+                    .addComponent(txtNombreCat))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton1)
+                .addComponent(btnAgregar)
                 .addGap(27, 27, 27))
         );
         jPanel4Layout.setVerticalGroup(
@@ -123,10 +134,10 @@ public class PanelCategoria extends javax.swing.JPanel {
                         .addContainerGap()
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(txtNombreCat, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addGap(19, 19, 19)
-                        .addComponent(jButton1)))
+                        .addComponent(btnAgregar)))
                 .addContainerGap(10, Short.MAX_VALUE))
         );
 
@@ -144,9 +155,9 @@ public class PanelCategoria extends javax.swing.JPanel {
                         .addGap(47, 47, 47)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addComponent(jButton3)
+                                .addComponent(btnEditar)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jButton5))
+                                .addComponent(btnEliminar))
                             .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addGap(17, 17, 17))
         );
@@ -159,8 +170,8 @@ public class PanelCategoria extends javax.swing.JPanel {
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(49, 49, 49)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jButton3)
-                            .addComponent(jButton5)))
+                            .addComponent(btnEditar)
+                            .addComponent(btnEliminar)))
                     .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 163, Short.MAX_VALUE)
@@ -196,19 +207,77 @@ public class PanelCategoria extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton3ActionPerformed
+    private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
+    int fila = tablaCategorias.getSelectedRow();
+    if (fila != -1) {
+        // Obtenemos el ID de la primera columna de la tabla
+        int id = Integer.parseInt(tablaCategorias.getValueAt(fila, 0).toString());
+        Categoria cat = new Categoria();
+        CategoriaDAO catDao = new CategoriaDAO();
+        
+        // Seteamos los datos con los nombres de tu clase Categoria
+        cat.setIdCategoria(id);
+        cat.setNombreCat(txtNombreCat.getText());
+        
+        // Tu método en el DAO se llama 'editar'
+        if (catDao.editar(cat)) {
+            JOptionPane.showMessageDialog(null, "Categoría actualizada");
+            limpiarTabla();
+            catDao.listar();
+            txtNombreCat.setText("");
+        }
+    } else {
+        JOptionPane.showMessageDialog(null, "Selecciona una categoría de la tabla");
+    }
 
-    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton5ActionPerformed
+    }//GEN-LAST:event_btnEditarActionPerformed
+
+    private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
+    int fila = tablaCategorias.getSelectedRow();
+    if (fila != -1) {
+        int pregunta = JOptionPane.showConfirmDialog(null, "¿Realmente desea eliminar esta categoría?");
+        if (pregunta == JOptionPane.YES_OPTION) {
+            int id = Integer.parseInt(tablaCategorias.getValueAt(fila, 0).toString());
+            CategoriaDAO catDao = new CategoriaDAO();
+            
+            // Tu método en el DAO se llama 'eliminar'
+            if (catDao.eliminar(id)) {
+                JOptionPane.showMessageDialog(null, "Categoría eliminada");
+                limpiarTabla();
+                catDao.listar();
+                txtNombreCat.setText("");
+            }
+        }
+    } else {
+        JOptionPane.showMessageDialog(null, "Selecciona una fila primero");
+    }
+    }//GEN-LAST:event_btnEliminarActionPerformed
+
+    private void btnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActionPerformed
+    if (!txtNombreCat.getText().isEmpty()) {
+        Categoria cat = new Categoria();
+        CategoriaDAO catDao = new CategoriaDAO();
+        
+        // Usamos el nombre exacto de tu modelo
+        cat.setNombreCat(txtNombreCat.getText());
+        
+        // Tu método en el DAO se llama 'registrar'
+        if (catDao.registrar(cat)) {
+            JOptionPane.showMessageDialog(null, "Categoría registrada");
+            limpiarTabla();
+            catDao.listar();
+            txtNombreCat.setText("");
+        }
+    } else {
+        JOptionPane.showMessageDialog(null, "Escribe un nombre para la categoría");
+    }
+    }//GEN-LAST:event_btnAgregarActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton5;
+    private javax.swing.JButton btnAgregar;
+    private javax.swing.JButton btnEditar;
+    private javax.swing.JButton btnEliminar;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
@@ -216,7 +285,14 @@ public class PanelCategoria extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
-    private javax.swing.JTextField jTextField1;
+    private javax.swing.JTable tablaCategorias;
+    private javax.swing.JTextField txtNombreCat;
     // End of variables declaration//GEN-END:variables
+// Limpia los campos del formulario después de registrar.
+private void limpiarTabla() {
+    DefaultTableModel modelo = (DefaultTableModel) tablaCategorias.getModel();
+    while (modelo.getRowCount() > 0) {
+        modelo.removeRow(0);
+    }
+}
 }
