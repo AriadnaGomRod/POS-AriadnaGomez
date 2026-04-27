@@ -1,6 +1,10 @@
-package interfaz;
+package Interfaz;
+import Dao.CategoriaDAO;
 import Dao.ProductoDAO;
+import Modelo.Categoria;
 import Modelo.Producto;
+import Modelo.Proveedor;
+import Dao.ProveedorDAO;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -14,10 +18,41 @@ public class PanelProductos extends javax.swing.JPanel {
     Producto pro= new Producto();
     DefaultTableModel modelo = new DefaultTableModel();
 
-    public PanelProductos() {
-        initComponents();
-        listarProductos();
+   public PanelProductos() {
+    initComponents();
+    // Llamamos a los métodos para cargar la base de datos
+    llenarCategorias();
+    llenarProveedores();
+}
+
+public void llenarCategorias() {
+    CategoriaDAO catDao = new CategoriaDAO();
+    // Tu DAO devuelve List<Categoria>, así que debemos extraer el nombre
+    List<Categoria> lista = catDao.listar(); 
+    
+    // Asegúrate que tu ComboBox se llame ProductosCBCat en el Navigator
+    ProductosCBCat.removeAllItems(); 
+    if (lista != null) {
+        for (Categoria cat : lista) {
+            // Extraemos el nombre para mostrarlo en el combo
+            ProductosCBCat.addItem(cat.getNombreCat()); 
+        }
     }
+}
+
+public void llenarProveedores() {
+    ProveedorDAO prDao = new ProveedorDAO();
+    // Tu método en el DAO se llama listar()
+    List<Proveedor> lista = prDao.listar(); 
+    
+    // Asegúrate que tu ComboBox se llame ProductosCBProv en el Navigator
+    ProductosCBProv.removeAllItems();
+    if (lista != null) {
+        for (Proveedor pr : lista) {
+            ProductosCBProv.addItem(pr.getNomProv());
+        }
+    }
+}
 
     public void listarProductos() {
 
@@ -27,13 +62,12 @@ public class PanelProductos extends javax.swing.JPanel {
         modelo.setRowCount(0);
 
         for (Producto p : lista) {
-            modelo.addRow(new Object[]{
-                p.getIdProducto(),
-                p.getCodigoBarras(),
-                p.getNomProd(),
-                p.getPrecio(),
-                p.getStock()
-            });
+           modelo.addRow(new Object[]{
+    p.getIdProducto(),
+    p.getNomProd(),
+    p.getIdCategoria(),
+    p.getIdProveedor()
+});
         }
     }
     /**
@@ -373,14 +407,28 @@ public class PanelProductos extends javax.swing.JPanel {
     }//GEN-LAST:event_ProductosPCompraActionPerformed
 
     private void ProductosBTAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ProductosBTAddActionPerformed
-    if (!ProductosCod.getText().isEmpty() && !Prod.getText().isEmpty()) {
+        if (!ProductosCod.getText().isEmpty() && !Prod.getText().isEmpty()) {
         
         try {
+            // Datos básicos
             pro.setCodigoBarras(ProductosCod.getText());
             pro.setNomProd(Prod.getText());
             pro.setPrecio(Double.parseDouble(ProductosPVenta.getText()));
             pro.setStock(Integer.parseInt(ProductosStock.getText()));
             pro.setStockMin(ProductosStockMin.getText().isEmpty() ? 0 : Integer.parseInt(ProductosStockMin.getText()));
+
+            // --- LÓGICA PARA CATEGORÍA Y PROVEEDOR ---
+            // 1. Obtenemos el nombre seleccionado en el combo
+            String nombreCat = ProductosCBCat.getSelectedItem().toString();
+            String nombreProv = ProductosCBProv.getSelectedItem().toString();
+
+            // 2. Buscamos sus IDs usando los DAOs
+            CategoriaDAO catDao = new CategoriaDAO();
+            ProveedorDAO prDao = new ProveedorDAO();
+            
+            // Seteamos los IDs en el objeto producto (Asegúrate que estos métodos existan en tu clase Producto)
+            pro.setIdCategoria(catDao.obtenerIdPorNombre(nombreCat));
+            pro.setIdProveedor(prDao.obtenerIdPorNombre(nombreProv));
 
             if (pDao.registrar(pro)) {
                 JOptionPane.showMessageDialog(null, "Producto Registrado correctamente");
@@ -390,11 +438,14 @@ public class PanelProductos extends javax.swing.JPanel {
             
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(null, "Error: Verifique que Precio y Stock sean números válidos.");
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error inesperado: " + e.getMessage());
         }
         
     } else {
         JOptionPane.showMessageDialog(null, "Los campos Código y Producto son obligatorios");
     }
+
     }//GEN-LAST:event_ProductosBTAddActionPerformed
 
 

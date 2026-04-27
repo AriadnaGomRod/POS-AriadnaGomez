@@ -21,8 +21,8 @@ public class DetalleVentaDAO {
 
   // Registra los productos vendidos en una venta
     public boolean registrarDetalle(DetalleVenta dv) {
-        String sql = "INSERT INTO [Detalle Venta] ([Id Venta], [ID Producte], Cantidad, "
-                + "[Precio Unitario], SubTotal) VALUES (?,?,?,?,?)";
+        String sql = "INSERT INTO [Detalle_Venta] ([Id_Venta], [ID_Producto], Cantidad, "
+                + "[Precio_Unitario], SubTotal) VALUES (?,?,?,?,?)";
          // Inserta producto, cantidad, precio y subtotal
         try {
             con = conectar.getConexion();
@@ -43,7 +43,7 @@ public class DetalleVentaDAO {
        // Lista los detalles según el id de venta
     public List<DetalleVenta> listarDetallesPorVenta(int idVenta) {
         List<DetalleVenta> lista = new ArrayList<>();
-        String sql = "SELECT * FROM [Detalle Venta] WHERE [Id Venta] = ?";
+        String sql = "SELECT * FROM [Detalle_Venta] WHERE [Id_Venta] = ?";
         try {
             con = conectar.getConexion();
             ps = con.prepareStatement(sql);
@@ -51,10 +51,10 @@ public class DetalleVentaDAO {
             rs = ps.executeQuery();
             while (rs.next()) {
                 DetalleVenta dv = new DetalleVenta();
-                dv.setIdVenta(rs.getInt("Id Venta"));
-                dv.setIdProducto(rs.getInt("ID Producte"));
+                dv.setIdVenta(rs.getInt("Id_Venta"));
+                dv.setIdProducto(rs.getInt("ID_Producto"));
                 dv.setCantidad(rs.getInt("Cantidad"));
-                dv.setPrecioUnitario(rs.getDouble("Precio Unitario"));
+                dv.setPrecioUnitario(rs.getDouble("Precio_Unitario"));
                 dv.setSubtotal(rs.getDouble("SubTotal"));
                 lista.add(dv);
             }

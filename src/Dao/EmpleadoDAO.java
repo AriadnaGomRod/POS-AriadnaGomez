@@ -20,28 +20,29 @@ public class EmpleadoDAO {
     ResultSet rs;
 
     // Verifica usuario y contraseña para iniciar sesión
-    public Empleado login(String user, String pass) {
-        Empleado emp = null;
-        String sql = "SELECT * FROM Empleado WHERE Usuario = ? AND Contraseña = ?";
-        try {
-            con = conectar.getConexion();
-            ps = con.prepareStatement(sql);
-            ps.setString(1, user);
-            ps.setString(2, pass);
-            rs = ps.executeQuery();
-            if (rs.next()) {
-                emp = new Empleado();
-                emp.setIdEmpleado(rs.getInt("Id Empleado"));
-                emp.setNombre(rs.getString("Nombre"));
-                emp.setRol(rs.getString("Rol"));
-                emp.setUsuario(rs.getString("Usuario"));
-            }
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Error en Login: " + e.toString());
+   public Empleado login(String user, String pass) {
+    Empleado emp = null;
+    // Quitamos el dbo si ya configuraste la base de datos predeterminada
+    String sql = "SELECT * FROM Empleado WHERE Usuario = ? AND Contrasena = ?";
+    try {
+        con = conectar.getConexion();
+        ps = con.prepareStatement(sql);
+        ps.setString(1, user);
+        ps.setString(2, pass);
+        rs = ps.executeQuery();
+        if (rs.next()) {
+            emp = new Empleado();
+            // CORRECCIÓN: Usar guion bajo como en tu DB
+            emp.setIdEmpleado(rs.getInt("Id_Empleado")); 
+            emp.setNombre(rs.getString("Nombre"));
+            emp.setRol(rs.getString("Rol"));
+            emp.setUsuario(rs.getString("Usuario"));
         }
-        return emp;
-        // Devuelve datos del empleado si existe
+    } catch (SQLException e) {
+        JOptionPane.showMessageDialog(null, "Error en Login: " + e.toString());
     }
+    return emp;
+}
 
     // Lista todos los empleados registrados
     public List<Empleado> listar() {
@@ -53,9 +54,10 @@ public class EmpleadoDAO {
             rs = ps.executeQuery();
             while (rs.next()) {
                 Empleado em = new Empleado();
-                em.setIdEmpleado(rs.getInt("Id Empleado"));
+                em.setIdEmpleado(rs.getInt("Id_Empleado"));
                 em.setNombre(rs.getString("Nombre"));
-                em.setaPaterno(rs.getString("A Paterno"));
+                em.setaPaterno(rs.getString("A_Paterno"));
+                em.setaMaterno(rs.getString("A_Materno"));
                 em.setTelefono(rs.getString("Telefono"));
                 em.setRol(rs.getString("Rol"));
                 em.setUsuario(rs.getString("Usuario"));
@@ -70,7 +72,7 @@ public class EmpleadoDAO {
 
     // Registra un nuevo empleado
     public boolean registrar(Empleado emp) {
-        String sql = "INSERT INTO Empleado (Nombre, [A Paterno], [A Materno], Telefono, Usuario, Contraseña, Rol) VALUES (?,?,?,?,?,?,?)";
+        String sql = "INSERT INTO Empleado (Nombre, [A_Paterno], [A_Materno], Telefono, Usuario, Contrasena, Rol) VALUES (?,?,?,?,?,?,?)";
         try {
             con = conectar.getConexion();
             ps = con.prepareStatement(sql);
@@ -92,7 +94,7 @@ public class EmpleadoDAO {
 
     // Elimina un empleado por id
     public boolean eliminar(int id) {
-        String sql = "DELETE FROM Empleado WHERE [Id Empleado] = ?";
+        String sql = "DELETE FROM Empleado WHERE [Id_Empleado] = ?";
         try {
             con = conectar.getConexion();
             ps = con.prepareStatement(sql);
@@ -106,4 +108,25 @@ public class EmpleadoDAO {
         // Borra el registro seleccionado
     }
     
+    //Edita los datos de un empleado
+    public boolean editar(Empleado emp) {
+    String sql = "UPDATE Empleado SET Nombre=?, [A_Paterno]=?, [A_Materno]=?, Telefono=?, Usuario=?, Contrasena=?, Rol=? WHERE [Id_Empleado]=?";
+    try {
+        con = conectar.getConexion();
+        ps = con.prepareStatement(sql);
+        ps.setString(1, emp.getNombre());
+        ps.setString(2, emp.getaPaterno());
+        ps.setString(3, emp.getaMaterno());
+        ps.setString(4, emp.getTelefono());
+        ps.setString(5, emp.getUsuario());
+        ps.setString(6, emp.getContrasena());
+        ps.setString(7, emp.getRol());
+        ps.setInt(8, emp.getIdEmpleado());
+        ps.execute();
+        return true;
+    } catch (SQLException e) {
+        System.out.println("Error al editar: " + e.toString());
+        return false;
+    }
+}
 }

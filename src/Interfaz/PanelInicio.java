@@ -1,4 +1,4 @@
-package interfaz;
+package Interfaz;
 import Dao.ProductoDAO;
 import Dao.VentaDAO;
 import Modelo.Producto;
@@ -315,8 +315,8 @@ public void listarTablasInicio() {
      * Botón Nueva Venta.
      */
     private void InicioNuevaVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_InicioNuevaVentaActionPerformed
-     // Acción para abrir ventas
-
+    Interfaz ventana = (Interfaz) javax.swing.SwingUtilities.getWindowAncestor(this);
+    ventana.cambiarPanel(new PanelVentas());
     }//GEN-LAST:event_InicioNuevaVentaActionPerformed
 
 

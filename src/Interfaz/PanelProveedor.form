@@ -278,14 +278,8 @@
               </Events>
             </Component>
             <Component class="javax.swing.JTextField" name="txtNombrePr">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="jTextField7"/>
-              </Properties>
             </Component>
             <Component class="javax.swing.JTextField" name="txtTelefonoPr">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="jTextField8"/>
-              </Properties>
             </Component>
             <Container class="javax.swing.JScrollPane" name="jScrollPane2">
               <AuxValues>

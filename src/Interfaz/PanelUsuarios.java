@@ -1,4 +1,4 @@
-package interfaz;
+package Interfaz;
 
 import Dao.EmpleadoDAO;
 import Modelo.Empleado;
@@ -16,25 +16,46 @@ public class PanelUsuarios extends javax.swing.JPanel {
      * Creates new form PanelUsuarios
      */
     public PanelUsuarios() {
-        initComponents();
-    }
+    initComponents();
+    listarEmpleados();
+}
+  
     public void listarEmpleados() {
     EmpleadoDAO empDao = new EmpleadoDAO();
     List<Empleado> lista = empDao.listar();
+
     DefaultTableModel modelo = (DefaultTableModel) tablaUsuarios.getModel();
-    modelo.setRowCount(0); // Limpiar tabla
-    
-    Object[] ob = new Object[6]; // Ajusta según el número de columnas de la tabla
+    modelo.setRowCount(0); // limpiar tabla
+
+    Object[] ob = new Object[8];
+
     for (int i = 0; i < lista.size(); i++) {
-        ob[0] = lista.get(i).getIdEmpleado();
-        ob[1] = lista.get(i).getNombre() + " " + lista.get(i).getaPaterno();
-        ob[2] = lista.get(i).getTelefono();
-        ob[3] = lista.get(i).getUsuario();
-        ob[4] = lista.get(i).getRol();
+        Empleado emp = lista.get(i);
+
+        ob[0] = emp.getIdEmpleado();
+        ob[1] = emp.getNombre();
+        ob[2] = emp.getaPaterno();
+        ob[3] = emp.getaMaterno();
+        ob[4] = emp.getTelefono();
+        ob[5] = emp.getUsuario();
+        ob[6] = emp.getContrasena();
+        ob[7] = emp.getRol();
+
         modelo.addRow(ob);
     }
+
     tablaUsuarios.setModel(modelo);
 }
+     private String valorTabla(int fila, int columna){
+    Object dato = tablaUsuarios.getValueAt(fila, columna);
+
+    if(dato == null){
+        return "";
+    }
+
+    return dato.toString();
+}
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -113,17 +134,17 @@ public class PanelUsuarios extends javax.swing.JPanel {
 
         tablaUsuarios.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "Nombre", "Teléfono", "Usuario", "Rol"
+                "ID", "Nombre", "Apellido Pat", "Apellido Mat", "Teléfono", "Usuario", "Contrasena", "Rol"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Object.class, java.lang.Object.class, java.lang.String.class, java.lang.Object.class
+                java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.String.class, java.lang.Object.class, java.lang.Object.class
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -136,6 +157,9 @@ public class PanelUsuarios extends javax.swing.JPanel {
             }
         });
         jScrollPane1.setViewportView(tablaUsuarios);
+        if (tablaUsuarios.getColumnModel().getColumnCount() > 0) {
+            tablaUsuarios.getColumnModel().getColumn(0).setResizable(false);
+        }
 
         btnEditar.setBackground(new java.awt.Color(197, 255, 135));
         btnEditar.setFont(new java.awt.Font("Verdana", 0, 10)); // NOI18N
@@ -155,14 +179,14 @@ public class PanelUsuarios extends javax.swing.JPanel {
             }
         });
 
-        txtNombreUser.setText("jTextField7");
-
-        txtTelefonoUser.setText("jTextField8");
-
         jLabel12.setFont(new java.awt.Font("Verdana", 1, 12)); // NOI18N
         jLabel12.setText("Usuario:");
 
-        txtUsuario.setText("jTextField7");
+        txtUsuario.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtUsuarioActionPerformed(evt);
+            }
+        });
 
         jLabel5.setFont(new java.awt.Font("Verdana", 1, 12)); // NOI18N
         jLabel5.setText("Contraseña:");
@@ -170,19 +194,13 @@ public class PanelUsuarios extends javax.swing.JPanel {
         jLabel6.setFont(new java.awt.Font("Verdana", 1, 12)); // NOI18N
         jLabel6.setText("Rol:");
 
-        txtContrasena.setText("jPasswordField1");
-
-        cbxRol.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
-        txtApaterno.setText("jTextField7");
+        cbxRol.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Empleado regular", "Encargado" }));
 
         jLabel13.setFont(new java.awt.Font("Verdana", 1, 12)); // NOI18N
         jLabel13.setText("Apellido P:");
 
-        txtAmaterno.setText("jTextField7");
-
         jLabel14.setFont(new java.awt.Font("Verdana", 1, 12)); // NOI18N
-        jLabel14.setText("Apellido P:");
+        jLabel14.setText("Apellido M:");
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -342,39 +360,26 @@ public class PanelUsuarios extends javax.swing.JPanel {
 
     private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
     int fila = tablaUsuarios.getSelectedRow();
-    
-    // Verifica que haya una fila seleccionada
-    if (fila != -1) {
-        // Obtiene el ID de la fila seleccionada (columna 0)
-        int id = Integer.parseInt(tablaUsuarios.getValueAt(fila, 0).toString());
-        
-        // Valida que los campos básicos no estén vacíos
-        if (!txtNombreUser.getText().isEmpty() && !txtUsuario.getText().isEmpty()) {
-            
-            Empleado emp = new Empleado();
-            EmpleadoDAO empDao = new EmpleadoDAO();
-            
-            // Llena el objeto con los datos de los JTextField
-            emp.setIdEmpleado(id);
-            emp.setNombre(txtNombreUser.getText());
-            emp.setaPaterno(txtApaterno.getText()); 
-            emp.setaMaterno(txtAmaterno.getText());
-            emp.setTelefono(txtTelefonoUser.getText());
-            emp.setUsuario(txtUsuario.getText());
-            emp.setContrasena(String.valueOf(txtContrasena.getPassword()));
-            emp.setRol(cbxRol.getSelectedItem().toString());
-            
-            //Ejecuta la actualización en el DAO
-            if (empDao.editar(emp)) {
-                JOptionPane.showMessageDialog(null, "Datos del empleado actualizados");
-                listarEmpleados(); // Refresca la tabla
-                limpiarCampos();   // Limpia los cuadros de texto
-            }
-        } else {
-            JOptionPane.showMessageDialog(null, "Nombre y Usuario son obligatorios");
-        }
-    } else {
-        JOptionPane.showMessageDialog(null, "Selecciona un usuario de la tabla para editar");
+
+    if(fila >= 0){
+
+        Empleado emp = new Empleado();
+        EmpleadoDAO dao = new EmpleadoDAO();
+
+        int id = Integer.parseInt(tablaUsuarios.getValueAt(fila,0).toString());
+
+        emp.setIdEmpleado(id);
+        emp.setNombre(txtNombreUser.getText());
+        emp.setaPaterno(txtApaterno.getText()); 
+        emp.setaMaterno(txtAmaterno.getText()); 
+        emp.setTelefono(txtTelefonoUser.getText());
+        emp.setUsuario(txtUsuario.getText());
+        emp.setContrasena(txtContrasena.getText());
+        emp.setRol(cbxRol.getSelectedItem().toString());
+
+        dao.editar(emp);   // ✅ NO registrar()
+
+        listarEmpleados();
     }
     }//GEN-LAST:event_btnEditarActionPerformed
 
@@ -398,12 +403,20 @@ public class PanelUsuarios extends javax.swing.JPanel {
 
     private void tablaUsuariosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablaUsuariosMouseClicked
     int fila = tablaUsuarios.getSelectedRow();
-    // Suponiendo el orden de tus columnas en la tabla
-    txtNombreUser.setText(tablaUsuarios.getValueAt(fila, 1).toString());
-    txtTelefonoUser.setText(tablaUsuarios.getValueAt(fila, 2).toString());
-    txtUsuario.setText(tablaUsuarios.getValueAt(fila, 3).toString());
-    cbxRol.setSelectedItem(tablaUsuarios.getValueAt(fila, 4).toString());
+
+    txtNombreUser.setText(valorTabla(fila,1));
+    txtApaterno.setText(valorTabla(fila,2));
+    txtAmaterno.setText(valorTabla(fila,3));
+    txtTelefonoUser.setText(valorTabla(fila,4));
+    txtUsuario.setText(valorTabla(fila,5));
+    txtContrasena.setText(valorTabla(fila,6));
+    cbxRol.setSelectedItem(valorTabla(fila,7));
+
     }//GEN-LAST:event_tablaUsuariosMouseClicked
+
+    private void txtUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtUsuarioActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtUsuarioActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -18,14 +18,14 @@ public class ProductoDAO {
     private Producto obtenerProducto(ResultSet rs) throws SQLException {
         Producto p = new Producto();
 
-        p.setIdProducto(rs.getInt("ID Producte"));
-        p.setCodigoBarras(rs.getString("Codigo Barras"));
-        p.setNomProd(rs.getString("Nom Prod"));
+        p.setIdProducto(rs.getInt("ID_Producto"));
+        p.setCodigoBarras(rs.getString("Codigo_Barras"));
+        p.setNomProd(rs.getString("Nom_Prod"));
         p.setPrecio(rs.getDouble("Precio"));
         p.setStock(rs.getInt("Stock"));
-        p.setStockMin(rs.getInt("Stock Min"));
-        p.setIdCategoria(rs.getInt("Id Categoria"));
-        p.setIdProveedor(rs.getInt("ID Proveedor"));
+        p.setStockMin(rs.getInt("Stock_Min"));
+        p.setIdCategoria(rs.getInt("Id_Categoria"));
+        p.setIdProveedor(rs.getInt("ID_Proveedor"));
 
         return p;
         // Asigna los datos consultados al objeto
@@ -57,7 +57,7 @@ public class ProductoDAO {
     public List<Producto> listarStockBajo() {
         List<Producto> lista = new ArrayList<>();
 
-        String sql = "SELECT * FROM Producto WHERE Stock <= [Stock Min]";
+        String sql = "SELECT * FROM Producto WHERE Stock <= [Stock_Min]";
 
         try (
             Connection con = conectar.getConexion();
@@ -80,7 +80,7 @@ public class ProductoDAO {
     public boolean registrar(Producto p) {
 
         String sql = "INSERT INTO Producto "
-                + "([Codigo Barras],[Nom Prod],Precio,Stock,[Stock Min],[Id Categoria],[ID Proveedor]) "
+                + "([Codigo_Barras],[Nom_Prod],Precio,Stock,[Stock_Min],[Id_Categoria],[ID_Proveedor]) "
                 + "VALUES (?,?,?,?,?,?,?)";
 
         try (
@@ -109,7 +109,7 @@ public class ProductoDAO {
     // Elimina un producto por id
     public boolean eliminar(int id) {
 
-        String sql = "DELETE FROM Producto WHERE [ID Producte] = ?";
+        String sql = "DELETE FROM Producto WHERE [ID_Producto] = ?";
 
         try (
             Connection con = conectar.getConexion();
@@ -130,7 +130,7 @@ public class ProductoDAO {
     // Busca producto por código de barras
     public Producto buscarPorCodigo(String codigo) {
 
-        String sql = "SELECT * FROM Producto WHERE [Codigo Barras] = ?";
+        String sql = "SELECT * FROM Producto WHERE [Codigo_Barras] = ?";
 
         try (
             Connection con = conectar.getConexion();
@@ -155,7 +155,7 @@ public class ProductoDAO {
     // Busca producto por nombre
     public Producto buscarPorNombre(String nombre) {
 
-        String sql = "SELECT * FROM Producto WHERE [Nom Prod] = ?";
+        String sql = "SELECT * FROM Producto WHERE [Nom_Prod] = ?";
 
         try (
             Connection con = conectar.getConexion();
@@ -181,14 +181,14 @@ public class ProductoDAO {
     public boolean editar(Producto p) {
 
         String sql = "UPDATE Producto SET "
-                + "[Codigo Barras]=?, "
-                + "[Nom Prod]=?, "
+                + "[Codigo_Barras]=?, "
+                + "[Nom_Prod]=?, "
                 + "Precio=?, "
                 + "Stock=?, "
-                + "[Stock Min]=?, "
-                + "[Id Categoria]=?, "
-                + "[ID Proveedor]=? "
-                + "WHERE [ID Producte]=?";
+                + "[Stock_Min]=?, "
+                + "[Id_Categoria]=?, "
+                + "[ID_Proveedor]=? "
+                + "WHERE [ID_Producto]=?";
 
         try (
             Connection con = conectar.getConexion();
@@ -217,7 +217,7 @@ public class ProductoDAO {
     // Edita un solo campo del producto
     public boolean editarCampos(String columna, Object valor, int id) {
         // La columna se concatena directamente en el String sql
-        String sql = "UPDATE Producto SET " + columna + " = ? WHERE [ID Producte] = ?";
+        String sql = "UPDATE Producto SET " + columna + " = ? WHERE [ID_Producto] = ?";
 
         try (
             Connection con = conectar.getConexion();
@@ -239,7 +239,7 @@ public class ProductoDAO {
      // Descuenta stock después de una venta
     public boolean descontarStock(int cantidad, int id) {
 
-        String sql = "UPDATE Producto SET Stock = Stock - ? WHERE [ID Producte] = ?";
+        String sql = "UPDATE Producto SET Stock = Stock - ? WHERE [ID_Producto] = ?";
 
         try (
             Connection con = conectar.getConexion();
@@ -265,7 +265,7 @@ public class ProductoDAO {
         List<Producto> lista = new ArrayList<>();
 
         String sql = "SELECT * FROM Producto "
-                + "WHERE [ID Proveedor] = ? AND [Id Categoria] = ?";
+                + "WHERE [ID_Proveedor] = ? AND [Id_Categoria] = ?";
 
         try (
             Connection con = conectar.getConexion();

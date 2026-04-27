@@ -39,14 +39,14 @@ public class VentaDAO {
     // Lista las 10 ventas más recientes
     public List<Venta> listarVentasRecientes() {
         List<Venta> lista = new ArrayList<>();
-        String sql = "SELECT TOP 10 [Id Venta], Hora, Total FROM Venta ORDER BY [Id Venta] DESC";
+        String sql = "SELECT TOP 10 [Id_Venta], Hora, Total FROM Venta ORDER BY [Id_Venta] DESC";
         try {
             con = conectar.getConexion();
             ps = con.prepareStatement(sql);
             rs = ps.executeQuery();
             while (rs.next()) {
                 Venta v = new Venta();
-                v.setIdVenta(rs.getInt("Id Venta"));
+                v.setIdVenta(rs.getInt("Id_Venta"));
                 v.setHora(rs.getString("Hora"));
                 v.setTotal(rs.getDouble("Total"));
                 lista.add(v);
@@ -60,7 +60,7 @@ public class VentaDAO {
      // Guarda una venta nueva y devuelve su id generado
     public int guardarVenta(Venta v) {
         int idVenta = 0;
-        String sql = "INSERT INTO Venta (Fecha, Hora, [Tipo Comprob], Total, [Id Empleado]) VALUES (CAST(GETDATE() AS DATE), CAST(GETDATE() AS TIME), ?, ?, ?)";
+        String sql = "INSERT INTO Venta (Fecha, Hora, [Tipo_Comprob], Total, [Id_Empleado]) VALUES (CAST(GETDATE() AS DATE), CAST(GETDATE() AS TIME), ?, ?, ?)";
         try {
             con = conectar.getConexion();
        
@@ -82,7 +82,7 @@ public class VentaDAO {
     // Filtra ventas entre dos fechas
 public List<Venta> filtrarVentasPorFecha(String inicio, String fin) {
     List<Venta> lista = new ArrayList<>();
-    String sql = "SELECT [Id Venta], Fecha, Hora, Total FROM Venta WHERE Fecha BETWEEN ? AND ?";
+    String sql = "SELECT [Id_Venta], Fecha, Hora, Total FROM Venta WHERE Fecha BETWEEN ? AND ?";
     try {
         con = conectar.getConexion();
         ps = con.prepareStatement(sql);
@@ -91,7 +91,7 @@ public List<Venta> filtrarVentasPorFecha(String inicio, String fin) {
         rs = ps.executeQuery();
         while (rs.next()) {
             Venta v = new Venta();
-            v.setIdVenta(rs.getInt("Id Venta"));
+            v.setIdVenta(rs.getInt("Id_Venta"));
             v.setFecha(rs.getString("Fecha"));
             v.setHora(rs.getString("Hora"));
             v.setTotal(rs.getDouble("Total"));
@@ -106,7 +106,7 @@ public List<Venta> filtrarVentasPorFecha(String inicio, String fin) {
  // Obtiene cantidad de ventas y total vendido
 public double[] obtenerResumenVentas(String inicio, String fin) {
     double[] resumen = new double[2];
-    String sql = "SELECT COUNT([Id Venta]), SUM(Total) FROM Venta WHERE Fecha BETWEEN ? AND ?";
+    String sql = "SELECT COUNT([Id_Venta]), SUM(Total) FROM Venta WHERE Fecha BETWEEN ? AND ?";
     try {
         con = conectar.getConexion();
         ps = con.prepareStatement(sql);

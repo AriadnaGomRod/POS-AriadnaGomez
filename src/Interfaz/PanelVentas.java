@@ -1,4 +1,4 @@
-package interfaz;
+package Interfaz;
 /**
  * Panel encargado del proceso de ventas.
  */

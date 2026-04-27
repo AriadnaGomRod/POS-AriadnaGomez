@@ -31,8 +31,8 @@ public class CategoriaDAO {
             rs = ps.executeQuery();
             while (rs.next()) {
                 Categoria cat = new Categoria();
-                cat.setIdCategoria(rs.getInt("Id Categoria"));
-                cat.setNombreCat(rs.getString("Nombre Cat"));
+                cat.setIdCategoria(rs.getInt("Id_Categoria"));
+                cat.setNombreCat(rs.getString("Nombre_Cat"));
                 lista.add(cat);
             }
         } catch (SQLException e) {
@@ -44,7 +44,7 @@ public class CategoriaDAO {
     
         // Registra una nueva categoría
     public boolean registrar(Categoria cat) {
-        String sql = "INSERT INTO Categoria ([Nombre Cat]) VALUES (?)";
+        String sql = "INSERT INTO Categoria ([Nombre_Cat]) VALUES (?)";
         try {
             con = conectar.getConexion();
             ps = con.prepareStatement(sql);
@@ -60,7 +60,7 @@ public class CategoriaDAO {
 
         // Edita una categoría existente
     public boolean editar(Categoria cat) {
-        String sql = "UPDATE Categoria SET [Nombre Cat]=? WHERE [Id Categoria]=?";
+        String sql = "UPDATE Categoria SET [Nombre_Cat]=? WHERE [Id_Categoria]=?";
         try {
             con = conectar.getConexion();
             ps = con.prepareStatement(sql);
@@ -78,7 +78,7 @@ public class CategoriaDAO {
 
       // Elimina una categoría por id
     public boolean eliminar(int id) {
-        String sql = "DELETE FROM Categoria WHERE [Id Categoria] = ?";
+        String sql = "DELETE FROM Categoria WHERE [Id_Categoria] = ?";
         try {
             con = conectar.getConexion();
             ps = con.prepareStatement(sql);
@@ -91,4 +91,20 @@ public class CategoriaDAO {
         }
     // Borra el registro seleccionado
     }
+   public int obtenerIdPorNombre(String nombre) {
+    int id = 0;
+    String sql = "SELECT Id_Categoria FROM Categoria WHERE Nombre_Cat = ?";
+    try {
+        con = conectar.getConexion();
+        ps = con.prepareStatement(sql);
+        ps.setString(1, nombre);
+        rs = ps.executeQuery();
+        if (rs.next()) {
+            id = rs.getInt("Id_Categoria");
+        }
+    } catch (SQLException e) {
+        System.out.println("Error al buscar ID: " + e.toString());
+    }
+    return id;
+}
 }

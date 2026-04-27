@@ -1,39 +1,74 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
-package interfaz;
+package Interfaz;
 
+import Modelo.Empleado;
+import Modelo.Proveedor;
 import javax.swing.JPanel;
+import java.util.List;
+import java.time.LocalDate;
 
-/**
- *
- * @author arigo
- */
 public class Interfaz extends javax.swing.JFrame {
-    /**
-    * Método para cambiar el panel mostrado en la ventana principal.
-    * Reemplaza el contenido actual por el panel recibido.
-    */
-public void cambiarPanel(JPanel panel){
-     // Ajusta tamaño y posición del panel nuevo
-    panel.setSize(PanelContenido.getSize());
-        panel.setLocation(0,0);
+
+    Empleado usuarioLogueado;
+
+    // Constructor Principal
+    public Interfaz(Empleado emp) {
+        initComponents();
+        this.usuarioLogueado = emp;
+        
+        // Configuración de encabezado
+        IntUsuario.setText(emp.getNombre());
+        IntRol.setText(emp.getRol());
+        IntFecha.setText(LocalDate.now().toString());
+        
+        // Control de permisos por Rol
+        if (!emp.getRol().equalsIgnoreCase("Administrador")) {
+            BCategorias.setEnabled(false);
+            BProveedor.setEnabled(false);
+            BUsuarios.setEnabled(false);
+        }
+        
+        // Panel inicial por defecto
+        cambiarPanel(new PanelInicio());
+    }
+
+    // Constructor por defecto para evitar errores de NetBeans
+    public Interfaz() {
+        initComponents();
+        cambiarPanel(new PanelInicio());
+    }
+
+    // Método universal para cambiar de sección
+    public void cambiarPanel(JPanel panel) {
+        panel.setSize(PanelContenido.getSize());
+        panel.setLocation(0, 0);
         
         PanelContenido.removeAll();
         PanelContenido.add(panel);
         PanelContenido.repaint();
         PanelContenido.revalidate();
-         // Limpia el panel actual y carga el nuevo
+    }
+private String determinarTurnoAutomatico() {
+    // Obtenemos la hora actual (0-23) y el minuto
+    java.util.Calendar cal = java.util.Calendar.getInstance();
+    int hora = cal.get(java.util.Calendar.HOUR_OF_DAY);
+    int minuto = cal.get(java.util.Calendar.MINUTE);
+
+    // Convertimos todo a minutos totales desde las 00:00 para comparar fácil
+    int tiempoActual = (hora * 60) + minuto;
+    int corteMinutos = (14 * 60) + 40; // 14:40 (2:40 PM)
+
+    if (tiempoActual < corteMinutos) {
+        return "Matutino";
+    } else {
+        return "Vespertino";
+    }
 }
+
+
 /**
  * Constructor principal de la interfaz.
  * Inicializa componentes y muestra PanelInicio.
  */
-    public Interfaz() {
-        initComponents();
-        cambiarPanel(new PanelInicio());
-    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -378,7 +413,13 @@ public void cambiarPanel(JPanel panel){
     }// </editor-fold>//GEN-END:initComponents
 
     private void CerrarSesionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CerrarSesionActionPerformed
-        // TODO add your handling code here:
+    // Creamos una nueva instancia del Login
+    Login log = new Login();
+    log.setVisible(true);
+    
+    // Cerramos la ventana actual (el menú principal)
+    this.dispose();
+
     }//GEN-LAST:event_CerrarSesionActionPerformed
 /**
  * Botón Inicio.
@@ -414,7 +455,18 @@ public void cambiarPanel(JPanel panel){
  * Abre el panel de reportes.
  */
     private void BReportesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BReportesActionPerformed
-        cambiarPanel(new REmpleado());
+    if (usuarioLogueado.getRol().equalsIgnoreCase("Administrador")) {
+
+        cambiarPanel(new PanelReportes());
+
+    } else {
+
+        // Cambia la línea del error por esta:
+cambiarPanel(new REmpleado(
+    usuarioLogueado.getNombre(), 
+    determinarTurnoAutomatico() // Aquí usamos el cálculo automático
+));
+    }
     }//GEN-LAST:event_BReportesActionPerformed
 /**
  * Botón Categorías.
@@ -428,7 +480,7 @@ public void cambiarPanel(JPanel panel){
  * Abre el panel de proveedores.
  */
     private void BProveedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BProveedorActionPerformed
-        cambiarPanel(new PanelProveedor());
+       cambiarPanel(new PanelProveedor());
     }//GEN-LAST:event_BProveedorActionPerformed
 /**
  * Botón Usuarios.

@@ -1,11 +1,11 @@
-package interfaz;
+package Interfaz;
 
 import Dao.ProductoDAO;
 import Modelo.Producto;
 import Dao.CategoriaDAO;
 import Modelo.Categoria;
 import Modelo.Proveedor;
-import dao.ProveedorDAO;
+import Dao.ProveedorDAO;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;

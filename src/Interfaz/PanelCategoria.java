@@ -1,4 +1,4 @@
-package interfaz;
+package Interfaz;
 
 import Dao.CategoriaDAO;
 import Modelo.Categoria;
@@ -16,9 +16,23 @@ public class PanelCategoria extends javax.swing.JPanel {
      * Creates new form PanelCategoria
      */
     public PanelCategoria() {
-        initComponents();
-    }
+    initComponents();
+    listarCategorias();
+}
+public void listarCategorias() {
+    CategoriaDAO catDao = new CategoriaDAO();
+    DefaultTableModel modelo = (DefaultTableModel) tablaCategorias.getModel();
 
+    limpiarTabla();
+
+    for (Categoria c : catDao.listar()) {
+        Object fila[] = new Object[2];
+        fila[0] = c.getIdCategoria();
+        fila[1] = c.getNombreCat();
+
+        modelo.addRow(fila);
+    }
+}
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -225,6 +239,7 @@ public class PanelCategoria extends javax.swing.JPanel {
             limpiarTabla();
             catDao.listar();
             txtNombreCat.setText("");
+            listarCategorias();
         }
     } else {
         JOptionPane.showMessageDialog(null, "Selecciona una categoría de la tabla");
@@ -246,6 +261,7 @@ public class PanelCategoria extends javax.swing.JPanel {
                 limpiarTabla();
                 catDao.listar();
                 txtNombreCat.setText("");
+                listarCategorias();
             }
         }
     } else {
@@ -266,7 +282,8 @@ public class PanelCategoria extends javax.swing.JPanel {
             JOptionPane.showMessageDialog(null, "Categoría registrada");
             limpiarTabla();
             catDao.listar();
-            txtNombreCat.setText("");
+            listarCategorias();
+    txtNombreCat.setText("");
         }
     } else {
         JOptionPane.showMessageDialog(null, "Escribe un nombre para la categoría");

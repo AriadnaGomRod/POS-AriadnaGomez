@@ -1,7 +1,8 @@
-package interfaz;
+package Interfaz;
 
+import Modelo.Empleado;
 import Modelo.Proveedor;
-import dao.ProveedorDAO;
+import Dao.ProveedorDAO;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -11,13 +12,21 @@ import javax.swing.table.DefaultTableModel;
  * @author arigo
  */
 public class PanelProveedor extends javax.swing.JPanel {
-
+private Empleado usuario;
     /**
      * Creates new form PanelProveedor
      */
-    public PanelProveedor() {
-        initComponents();
-    }
+public PanelProveedor() {
+    initComponents();
+    listarProveedores();
+    
+
+    tablaProveedor.addMouseListener(new java.awt.event.MouseAdapter() {
+        public void mouseClicked(java.awt.event.MouseEvent evt) {
+            tablaProveedorMouseClicked(evt);
+        }
+    });
+}
 public void listarProveedores() {
     ProveedorDAO prDao = new ProveedorDAO();
     List<Proveedor> lista = prDao.listar();
@@ -35,6 +44,15 @@ public void listarProveedores() {
         modelo.addRow(ob);
     }
     tablaProveedor.setModel(modelo);
+}
+    private void tablaProveedorMouseClicked(java.awt.event.MouseEvent evt) {
+    int fila = tablaProveedor.getSelectedRow();
+
+    if (fila >= 0) {
+        txtNombrePr.setText(tablaProveedor.getValueAt(fila, 1).toString());
+        txtTelefonoPr.setText(tablaProveedor.getValueAt(fila, 2).toString());
+        txtDescripcionPr.setText(tablaProveedor.getValueAt(fila, 3).toString());
+    }
 }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -145,10 +163,6 @@ public void listarProveedores() {
                 btnEliminarActionPerformed(evt);
             }
         });
-
-        txtNombrePr.setText("jTextField7");
-
-        txtTelefonoPr.setText("jTextField8");
 
         txtDescripcionPr.setColumns(20);
         txtDescripcionPr.setRows(5);

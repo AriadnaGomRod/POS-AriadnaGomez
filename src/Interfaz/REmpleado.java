@@ -1,4 +1,4 @@
-package interfaz;
+package Interfaz;
 import Modelo.Reportes;
 import javax.swing.JOptionPane;
 
@@ -261,19 +261,17 @@ public class REmpleado extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnCerrarTurnoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCerrarTurnoActionPerformed
-    // Evento del botón Cerrar Turno.
-    // Se ejecuta cuando el usuario presiona el botón.    
-    // Muestra ventana de confirmación preguntando si desea cerrar turno.
-    int confirmar = JOptionPane.showConfirmDialog(null, "¿Seguro que deseas finalizar tu turno?");
+    int confirmar = JOptionPane.showConfirmDialog(null, 
+        "¿Seguro que deseas finalizar tu turno?");
+
     if (confirmar == JOptionPane.YES_OPTION) {
-       
-        // Crea una nueva ventana del Login.
+
         Login v = new Login();
-        // Muestra la ventana de inicio de sesión.
         v.setVisible(true);
-        // Cierra la ventana actual.
-        this.dispose();
-    }
+
+        java.awt.Window ventana = javax.swing.SwingUtilities.getWindowAncestor(this);
+        ventana.dispose();
+}
     }//GEN-LAST:event_btnCerrarTurnoActionPerformed
 
     private void btnExportarEmpleadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportarEmpleadoActionPerformed
