@@ -87,40 +87,41 @@ public class Reportes {
         }
     }
        // Genera reporte individual por empleado
-    public void exportarReporteEmpleado(JTable tabla, String empleado, String fecha, String turno, String totalVendido, String Ventas) {
+    public void exportarReporteEmpleado(JTable tabla, String empleado, String fecha, String turno, String totalVendido) {
     JFileChooser chooser = new JFileChooser();
-    chooser.setDialogTitle("Guardar Reporte del Empleado");
+    chooser.setDialogTitle("Guardar Reporte de Turno");
     
     if (chooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
-        File archivo = new File(chooser.getSelectedFile().toString() + "_ReporteEmpleado.csv");
+        File archivo = new File(chooser.getSelectedFile().toString() + "_Reporte_Turno.csv");
         
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(archivo))) {
-            // Escribir encabezado informativo del turno
-            bw.write("REPORTE DE TURNO"); bw.newLine();
+            // Escribimos los datos informativos del encabezado
+            bw.write("REPORTE DE TURNO DEL EMPLEADO"); bw.newLine();
             bw.write("Empleado:," + empleado); bw.newLine();
             bw.write("Fecha:," + fecha); bw.newLine();
             bw.write("Turno:," + turno); bw.newLine();
-            bw.write("Total Vendido en Turno:,$" + totalVendido); bw.newLine();
-            bw.write("Ventas Totales:,$" + totalVendido); bw.newLine();
+            bw.write("Total Vendido:,$" + totalVendido); bw.newLine();
             bw.newLine();
-            
+
+            // Escribimos los nombres de las columnas de la tabla
             for (int i = 0; i < tabla.getColumnCount(); i++) {
                 bw.write(tabla.getColumnName(i) + (i == tabla.getColumnCount() - 1 ? "" : ","));
             }
             bw.newLine();
 
-
+            // Recorremos la tabla fila por fila para exportar todos los productos vendidos
             for (int i = 0; i < tabla.getRowCount(); i++) {
                 for (int j = 0; j < tabla.getColumnCount(); j++) {
-                    bw.write(String.valueOf(tabla.getValueAt(i, j)) + (j == tabla.getColumnCount() - 1 ? "" : ","));
+                    Object valor = tabla.getValueAt(i, j);
+                    bw.write(String.valueOf(valor != null ? valor : "") + (j == tabla.getColumnCount() - 1 ? "" : ","));
                 }
                 bw.newLine();
             }
 
-            JOptionPane.showMessageDialog(null, "Reporte del empleado generado.");
+            JOptionPane.showMessageDialog(null, "¡Reporte exportado con éxito!");
 
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Error: " + e.getMessage());
+            JOptionPane.showMessageDialog(null, "Error al exportar: " + e.getMessage());
         }
     }
 }
