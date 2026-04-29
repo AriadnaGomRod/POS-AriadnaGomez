@@ -21,36 +21,33 @@ public class PanelProductos extends javax.swing.JPanel {
    public PanelProductos() {
     initComponents();
     // Llamamos a los métodos para cargar la base de datos
+    initComponents();
+    listarProductos();
     llenarCategorias();
     llenarProveedores();
 }
 
 public void llenarCategorias() {
     CategoriaDAO catDao = new CategoriaDAO();
-    // Tu DAO devuelve List<Categoria>, así que debemos extraer el nombre
-    List<Categoria> lista = catDao.listar(); 
-    
-    // Asegúrate que tu ComboBox se llame ProductosCBCat en el Navigator
-    ProductosCBCat.removeAllItems(); 
-    if (lista != null) {
-        for (Categoria cat : lista) {
-            // Extraemos el nombre para mostrarlo en el combo
-            ProductosCBCat.addItem(cat.getNombreCat()); 
-        }
+    List<Categoria> lista = catDao.listar();
+
+    ProductosCBCat.removeAllItems();
+
+    for (Categoria cat : lista) {
+        ProductosCBCat.addItem(cat.getNombreCat());
     }
 }
 
+
+
 public void llenarProveedores() {
-    ProveedorDAO prDao = new ProveedorDAO();
-    // Tu método en el DAO se llama listar()
-    List<Proveedor> lista = prDao.listar(); 
-    
-    // Asegúrate que tu ComboBox se llame ProductosCBProv en el Navigator
+     ProveedorDAO prDao = new ProveedorDAO();
+    List<Proveedor> lista = prDao.listar();
+
     ProductosCBProv.removeAllItems();
-    if (lista != null) {
-        for (Proveedor pr : lista) {
-            ProductosCBProv.addItem(pr.getNomProv());
-        }
+
+    for (Proveedor pr : lista) {
+        ProductosCBProv.addItem(pr.getNomProv());
     }
 }
 
@@ -65,8 +62,9 @@ public void llenarProveedores() {
            modelo.addRow(new Object[]{
     p.getIdProducto(),
     p.getNomProd(),
-    p.getIdCategoria(),
-    p.getIdProveedor()
+    p.getCategoria(),
+    p.getProveedor(),
+     p.getCodigoBarras()
 });
         }
     }
@@ -169,26 +167,20 @@ public void llenarProveedores() {
         jLabel9.setFont(new java.awt.Font("Verdana", 1, 12)); // NOI18N
         jLabel9.setText("Precio Venta:");
 
-        Prod.setText("jTextField1");
-
-        ProductosCod.setText("jTextField2");
-
         ProductosCBCat.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         ProductosCBProv.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        ProductosCBProv.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ProductosCBProvActionPerformed(evt);
+            }
+        });
 
-        ProductosPVenta.setText("jTextField3");
-
-        ProductosPCompra.setText("jTextField4");
         ProductosPCompra.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 ProductosPCompraActionPerformed(evt);
             }
         });
-
-        ProductosStock.setText("jTextField5");
-
-        ProductosStockMin.setText("jTextField6");
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
@@ -218,7 +210,7 @@ public void llenarProveedores() {
                                     .addComponent(ProductosStockMin)))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
                                 .addComponent(jLabel3)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 56, Short.MAX_VALUE)
                                 .addComponent(ProductosCod, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
                                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -447,6 +439,10 @@ public void llenarProveedores() {
     }
 
     }//GEN-LAST:event_ProductosBTAddActionPerformed
+
+    private void ProductosCBProvActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ProductosCBProvActionPerformed
+     
+    }//GEN-LAST:event_ProductosCBProvActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

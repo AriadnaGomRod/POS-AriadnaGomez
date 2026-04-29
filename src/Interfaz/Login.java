@@ -141,22 +141,25 @@ public class Login extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnEntrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEntrarActionPerformed
-        if (!txtUsuario.getText().isEmpty() && txtContrasena.getPassword().length > 0) {
-        String user = txtUsuario.getText();
-        String pass = String.valueOf(txtContrasena.getPassword());
-        
-        EmpleadoDAO dao = new EmpleadoDAO();
-        Empleado emp = dao.login(user, pass);
-        
-        if (emp != null) {
-            // Ahora esto funcionará porque ya creamos el constructor arriba
-            Interfaz menuP = new Interfaz(emp); 
-            menuP.setVisible(true);
-            this.dispose();
-        } else {
-            JOptionPane.showMessageDialog(null, "Usuario o contraseña incorrectos");
-        }
+      if (txtUsuario.getText().isEmpty() || txtContrasena.getPassword().length == 0) {
+        JOptionPane.showMessageDialog(null, "Por favor llena todos los campos");
+        return;
     }
+
+    String user = txtUsuario.getText();
+    String pass = String.valueOf(txtContrasena.getPassword());
+
+    EmpleadoDAO dao = new EmpleadoDAO();
+    Empleado emp = dao.login(user, pass);
+
+    if (emp != null) {
+        Interfaz menuP = new Interfaz(emp);
+        menuP.setVisible(true);
+        this.dispose();
+    } else {
+        JOptionPane.showMessageDialog(null, "Usuario o contraseña incorrectos");
+    }
+
     }//GEN-LAST:event_btnEntrarActionPerformed
 
     private void txtUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtUsuarioActionPerformed

@@ -14,6 +14,7 @@ public class Proveedor {
     private String nomProv;
     private String telefono;
     private String descripcion;
+    
 
     //Constructor vacío
     public Proveedor() {}

@@ -21,7 +21,9 @@ DefaultTableModel modeloInventario = new DefaultTableModel();
 public PanelInventario() {
     initComponents();
     llenarCombos();
-    listarProductosInventario();
+
+    DefaultTableModel modelo = (DefaultTableModel) jTableInv.getModel();
+    modelo.setRowCount(0); 
 }
 
 public void listarProductosInventario() {
@@ -230,13 +232,10 @@ private void llenarCombos() {
         jLabel7.setText("Precio Mayoreo:");
 
         InventarioStock.setBackground(new java.awt.Color(255, 238, 111));
-        InventarioStock.setText("jTextField1");
 
         InventarioPU.setBackground(new java.awt.Color(255, 238, 111));
-        InventarioPU.setText("jTextField2");
 
         InventarioPM.setBackground(new java.awt.Color(255, 238, 111));
-        InventarioPM.setText("jTextField3");
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -365,11 +364,35 @@ private void llenarCombos() {
     }// </editor-fold>//GEN-END:initComponents
 
     private void InventarioBTBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_InventarioBTBuscarActionPerformed
-    int idProv = InventarioCBProv.getSelectedIndex(); 
-    int idCat = InventarioCBCat.getSelectedIndex();
+   Object itemProv = InventarioCBProv.getSelectedItem();
+String proveedor = (itemProv != null) ? itemProv.toString() : "Seleccionar Proveedor";
 
-    List<Producto> lista = pDao.buscarPorFiltros(idProv, idCat);
+Object itemCat = InventarioCBCat.getSelectedItem();
+String categoria = (itemCat != null) ? itemCat.toString() : "Seleccionar Categoría";
+
+Object itemEstado = InventarioCBEstado.getSelectedItem();
+String estado = (itemEstado != null) ? itemEstado.toString() : "Seleccionar Estado";
+
+List<Producto> lista = pDao.buscarPorFiltros(proveedor, categoria, estado);
+
+    modeloInventario = (DefaultTableModel) jTableInv.getModel();
     modeloInventario.setRowCount(0);
+
+    Object[] ob = new Object[9];
+
+    for (Producto p : lista) {
+        ob[0] = p.getIdProducto();
+        ob[1] = p.getNomProd();
+        ob[2] = p.getCategoria();
+        ob[3] = p.getPrecio();
+        ob[4] = p.getProveedor();
+        ob[5] = p.getStock();
+        ob[6] = p.getStockMin();
+        ob[7] = p.getCodigoBarras();
+        ob[8] = p.getEstado();// o lo que tengas
+
+        modeloInventario.addRow(ob);
+    }
     }//GEN-LAST:event_InventarioBTBuscarActionPerformed
 
     private void InventarioBTPrecioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_InventarioBTPrecioActionPerformed
@@ -406,12 +429,20 @@ private void llenarCombos() {
     int fila = jTableInv.getSelectedRow();
     if (fila != -1) {
         int id = Integer.parseInt(jTableInv.getValueAt(fila, 0).toString());
-        int nuevoStock = Integer.parseInt(InventarioStock.getText());
-        
-        if (pDao.editarCampos("Stock", nuevoStock, id)) {
-            JOptionPane.showMessageDialog(null, "Stock actualizado");
-            listarProductosInventario();
-        }
+       String texto = InventarioStock.getText().trim();
+
+if (texto.isEmpty()) {
+    JOptionPane.showMessageDialog(null, "Ingresa un valor en Stock");
+    return;
+}
+
+int stock = Integer.parseInt(texto);
+
+if (pDao.actualizarStockYEstado(stock, id)) {
+    JOptionPane.showMessageDialog(null, "Stock actualizado");
+    listarProductosInventario();
+}
+      
     } else {
         JOptionPane.showMessageDialog(null, "Seleccione un producto de la tabla");
     }

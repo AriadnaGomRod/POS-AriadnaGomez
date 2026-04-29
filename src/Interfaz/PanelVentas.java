@@ -12,13 +12,14 @@ import java.util.List;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import Modelo.Empleado;
 
 /**
  *
  * @author arigo
  */
 public class PanelVentas extends javax.swing.JPanel {
-    
+    Empleado usuarioActual;
     // Objetos DAO para consultas y registros
 
 ProductoDAO pDao = new ProductoDAO();
@@ -33,20 +34,24 @@ double totalPagar = 0.00;
      * Constructor del panel.
      * Inicializa componentes y carga productos.
      */
-  public PanelVentas() {
+  public PanelVentas(Empleado usuario) {
     initComponents();
+    this.usuarioActual = usuario;
     llenarComboProductos();
+
+
+
+    modeloVentas = (DefaultTableModel) jTable1.getModel();
+    modeloVentas.setRowCount(0); 
 }
     /**
      * Llena el combo con productos disponibles.
      */
 public void llenarComboProductos() {
-    List<Producto> lista = pDao.listar();
-    VentasCBProd.removeAllItems(); 
+   List<Producto> lista = pDao.listar(); 
+    VentasCBProd.removeAllItems();      
     for (Producto p : lista) {
         VentasCBProd.addItem(p.getNomProd());
-     // Muestra nombres de productos
-
     }
 }
 
@@ -136,7 +141,6 @@ public void llenarComboProductos() {
         jLabel2.setText("Código:");
 
         VentasCod.setBackground(new java.awt.Color(218, 245, 245));
-        VentasCod.setText("jTextField1");
         VentasCod.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 VentasCodActionPerformed(evt);
@@ -159,13 +163,11 @@ public void llenarComboProductos() {
         jLabel4.setText("Cantidad:");
 
         VentaCantidad.setBackground(new java.awt.Color(218, 245, 245));
-        VentaCantidad.setText("jTextField1");
 
         jLabel5.setFont(new java.awt.Font("Verdana", 1, 12)); // NOI18N
         jLabel5.setText("Precio:");
 
         VentasPrecio.setBackground(new java.awt.Color(218, 245, 245));
-        VentasPrecio.setText("jTextField1");
 
         VentasBTEliminarProd.setBackground(new java.awt.Color(255, 102, 102));
         VentasBTEliminarProd.setFont(new java.awt.Font("Verdana", 1, 11)); // NOI18N
@@ -383,14 +385,20 @@ public void llenarComboProductos() {
         
         modeloVentas = (DefaultTableModel) jTable1.getModel();
         
-        Object[] fila = new Object[5];
-        fila[0] = "0";
-        fila[1] = VentasCBProd.getSelectedItem().toString();
-        fila[2] = cant;
-        fila[3] = precio;
-        fila[4] = subtotal;
+       String nombre = VentasCBProd.getSelectedItem().toString();
+Producto p = pDao.buscarPorNombre(nombre);
+if (p == null) {
+    JOptionPane.showMessageDialog(null, "Producto no encontrado");
+    return;
+}
+Object[] fila = new Object[5];
+fila[0] = p.getIdProducto(); 
+fila[1] = p.getNomProd();
+fila[2] = cant;
+fila[3] = precio;
+fila[4] = subtotal;
         
-        modeloVentas.addRow(fila);
+        modeloVentas.insertRow(0, fila);
         calcularTotal();
     } else {
         JOptionPane.showMessageDialog(null, "Ingresa cantidad y selecciona producto");
@@ -401,12 +409,18 @@ public void llenarComboProductos() {
      */
 private void calcularTotal() {
     totalPagar = 0.00;
-    for (int i = 0; i < jTable1.getRowCount(); i++) {
-        totalPagar += Double.parseDouble(jTable1.getValueAt(i, 4).toString());
-    // Suma subtotales de la tabla
 
+    for (int i = 0; i < jTable1.getRowCount(); i++) {
+
+        Object valor = jTable1.getValueAt(i, 4);
+
+        if (valor != null && !valor.toString().isEmpty()) {
+            totalPagar += Double.parseDouble(valor.toString());
+        }
     }
-   lblTotal.setText("" + totalPagar);
+
+    lblTotal.setText(String.valueOf(totalPagar));
+    
      /**
      * Elimina producto seleccionado.
      */
@@ -449,6 +463,7 @@ private void calcularTotal() {
         Venta v = new Venta();
         v.setTotal(totalPagar);
         v.setIdEmpleado(1);
+        v.setIdEmpleado(usuarioActual.getIdEmpleado());
         int idVenta = vDao.guardarVenta(v);
         
         if (idVenta != 0) {
@@ -459,6 +474,11 @@ private void calcularTotal() {
                 double subtotal = Double.parseDouble(jTable1.getValueAt(i, 4).toString());
 
                 Producto p = pDao.buscarPorNombre(nombreProd);
+
+if (p == null) {
+    JOptionPane.showMessageDialog(null, "Producto no encontrado: " + nombreProd);
+    continue;
+}
                 DetalleVenta dv = new DetalleVenta();
                 dv.setIdVenta(idVenta);
                 dv.setIdProducto(p.getIdProducto());
@@ -527,9 +547,11 @@ private void calcularTotal() {
     private void VentasCBProdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_VentasCBProdActionPerformed
     if (VentasCBProd.getSelectedItem() != null) {
         String nombre = VentasCBProd.getSelectedItem().toString();
-        Producto p = pDao.buscarPorNombre(nombre);
-        
-        VentasPrecio.setText("" + p.getPrecio());
+Producto p = pDao.buscarPorNombre(nombre);
+
+if (p != null) {
+    VentasPrecio.setText("" + p.getPrecio());
+}
     }
         // Carga precio automático
 

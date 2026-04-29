@@ -17,9 +17,31 @@ public class Producto {
     private int stockMin;
     private int idCategoria;
     private int idProveedor;
-
+private String proveedor;
+private String categoria;
+private String estado;
     //Constructor
-    public Producto() {}
+    public Producto() {
+
+        
+    }
+
+  public Producto(int idProducto, String codigoBarras, String nomProd, double precio,
+                int stock, int stockMin, int idCat,
+                String proveedor, String categoria, String estado) {
+
+    this.idProducto = idProducto;
+    this.codigoBarras = codigoBarras;
+    this.nomProd = nomProd;
+    this.precio = precio;
+    this.stock = stock;
+    this.stockMin = stockMin;
+    this.idCategoria = idCat;
+
+    this.proveedor = proveedor;
+    this.categoria = categoria;
+    this.estado = estado;
+}
 
 
     //Getters y setters
@@ -86,5 +108,34 @@ public class Producto {
     public void setIdProveedor(int idProveedor) {
         this.idProveedor = idProveedor;
     }
+
+    public String getProveedor() {
+        return proveedor;
+    }
+
+    public void setProveedor(String proveedor) {
+        this.proveedor = proveedor;
+    }
+
+    public String getCategoria() {
+        return categoria;
+    }
+
+    public void setCategoria(String categoria) {
+        this.categoria = categoria;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
     
+    
+    @Override
+public String toString() {
+    return nomProd;
+}
 }

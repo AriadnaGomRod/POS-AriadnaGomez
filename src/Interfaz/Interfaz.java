@@ -5,9 +5,10 @@ import Modelo.Proveedor;
 import javax.swing.JPanel;
 import java.util.List;
 import java.time.LocalDate;
+import Modelo.Empleado;
 
 public class Interfaz extends javax.swing.JFrame {
-
+  Empleado usuarioActual;
     Empleado usuarioLogueado;
 
     // Constructor Principal
@@ -28,13 +29,13 @@ public class Interfaz extends javax.swing.JFrame {
         }
         
         // Panel inicial por defecto
-        cambiarPanel(new PanelInicio());
+        cambiarPanel(new PanelInicio(usuarioLogueado));
     }
 
     // Constructor por defecto para evitar errores de NetBeans
     public Interfaz() {
         initComponents();
-        cambiarPanel(new PanelInicio());
+        cambiarPanel(new PanelInicio(usuarioLogueado));
     }
 
     // Método universal para cambiar de sección
@@ -433,7 +434,7 @@ private String determinarTurnoAutomatico() {
  * Abre el panel de ventas.
  */
     private void BVentasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BVentasActionPerformed
-        cambiarPanel(new PanelVentas());
+      cambiarPanel(new PanelVentas(usuarioLogueado));
     }//GEN-LAST:event_BVentasActionPerformed
 /**
  * Botón Inventario.

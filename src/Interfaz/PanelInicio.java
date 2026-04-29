@@ -5,13 +5,18 @@ import Modelo.Producto;
 import Modelo.Venta;
 import java.util.List;
 import javax.swing.table.DefaultTableModel;
+import Modelo.Empleado;
 
 /**
  * Panel principal que muestra resumen de ventas y stock bajo.
  */
 public class PanelInicio extends javax.swing.JPanel {
+    Empleado usuarioActual;
     // Objetos DAO para consultar datos
-
+public PanelInicio(Empleado usuario) {
+    initComponents();
+    this.usuarioActual = usuario;
+}
 VentaDAO vDao = new VentaDAO();
 ProductoDAO pDao = new ProductoDAO();
 
@@ -37,6 +42,7 @@ public void actualizarResumenVentas() {
      // Muestra ventas del día en la etiqueta
 
 }
+
      /**
      * Llena las tablas de ventas recientes y stock bajo.
      */
@@ -316,7 +322,7 @@ public void listarTablasInicio() {
      */
     private void InicioNuevaVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_InicioNuevaVentaActionPerformed
     Interfaz ventana = (Interfaz) javax.swing.SwingUtilities.getWindowAncestor(this);
-    ventana.cambiarPanel(new PanelVentas());
+    ventana.cambiarPanel(new PanelVentas(usuarioActual));
     }//GEN-LAST:event_InicioNuevaVentaActionPerformed
 
 

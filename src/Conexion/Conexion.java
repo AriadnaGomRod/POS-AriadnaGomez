@@ -13,10 +13,10 @@ public class Conexion {
     public Connection getConexion() {
 
         String connectionUrl =
-                "jdbc:sqlserver://localhost:1433;"
+                "jdbc:sqlserver://DAISY\\DAISYSERVIDOR1;"
                 + "database=Papeleria;"
                 + "user=sa;"
-                + "password=1234;"
+                + "password=123;"
                 + "timeout=30;"
                 + "encrypt=true;trustServerCertificate=true;";
 
@@ -24,8 +24,9 @@ public class Conexion {
             Connection con = DriverManager.getConnection(connectionUrl);
             return con;
         } catch (SQLException ex) {
-            return null;
-        }
+    System.out.println("Error: " + ex.getMessage());
+    return null;
+}
     }
     public static void main(String[] args) {
         Conexion cn = new Conexion();

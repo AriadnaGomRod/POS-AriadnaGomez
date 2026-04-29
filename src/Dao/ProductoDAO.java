@@ -24,8 +24,9 @@ public class ProductoDAO {
         p.setPrecio(rs.getDouble("Precio"));
         p.setStock(rs.getInt("Stock"));
         p.setStockMin(rs.getInt("Stock_Min"));
-        p.setIdCategoria(rs.getInt("Id_Categoria"));
-        p.setIdProveedor(rs.getInt("ID_Proveedor"));
+        p.setProveedor(rs.getString("Proveedor"));
+p.setCategoria(rs.getString("Categoria"));
+p.setEstado(rs.getString("Estado"));
 
         return p;
         // Asigna los datos consultados al objeto
@@ -34,7 +35,15 @@ public class ProductoDAO {
     public List<Producto> listar() {
         List<Producto> lista = new ArrayList<>();
 
-        String sql = "SELECT * FROM Producto";
+    String sql = "SELECT p.ID_Producto, p.Nom_Prod, " +
+"c.Nombre_Cat AS Categoria, " +
+"pr.Nom_Prov AS Proveedor, " +
+"p.Codigo_Barras, " +
+"p.Precio, p.Stock, p.Stock_Min, " +
+"p.Estado " +   
+"FROM Producto p " +
+"INNER JOIN Categoria c ON p.Id_Categoria = c.Id_Categoria " +
+"INNER JOIN Proveedor pr ON p.ID_Proveedor = pr.ID_Proveedor";
 
         try (
             Connection con = conectar.getConexion();
@@ -57,7 +66,15 @@ public class ProductoDAO {
     public List<Producto> listarStockBajo() {
         List<Producto> lista = new ArrayList<>();
 
-        String sql = "SELECT * FROM Producto WHERE Stock <= [Stock_Min]";
+        String sql = "SELECT p.ID_Producto, p.Nom_Prod, " +
+             "c.Nombre_Cat AS Categoria, " +
+             "pr.Nom_Prov AS Proveedor, " +
+             "p.Codigo_Barras, " +   
+             "p.Precio, p.Stock, p.Stock_Min " +
+             "FROM Producto p " +
+             "INNER JOIN Categoria c ON p.Id_Categoria = c.Id_Categoria " +
+             "INNER JOIN Proveedor pr ON p.ID_Proveedor = pr.ID_Proveedor " +
+             "WHERE p.Stock <= p.Stock_Min";
 
         try (
             Connection con = conectar.getConexion();
@@ -155,25 +172,32 @@ public class ProductoDAO {
     // Busca producto por nombre
     public Producto buscarPorNombre(String nombre) {
 
-        String sql = "SELECT * FROM Producto WHERE [Nom_Prod] = ?";
+        String sql = "SELECT p.ID_Producto, p.Nom_Prod, " +
+                 "c.Nombre_Cat AS Categoria, " +
+                 "pr.Nom_Prov AS Proveedor, " +
+                 "p.Precio, p.Stock, p.Stock_Min, p.Codigo_Barras " +
+                 "FROM Producto p " +
+                 "INNER JOIN Categoria c ON p.Id_Categoria = c.Id_Categoria " +
+                 "INNER JOIN Proveedor pr ON p.ID_Proveedor = pr.ID_Proveedor " +
+                 "WHERE p.Nom_Prod = ?";
 
-        try (
-            Connection con = conectar.getConexion();
-            PreparedStatement ps = con.prepareStatement(sql)
-        ) {
+          try {
+        Connection con = conectar.getConexion();
+        PreparedStatement ps = con.prepareStatement(sql);
 
-            ps.setString(1, nombre);
+        ps.setString(1, nombre);
 
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return obtenerProducto(rs);
-                }
-            }
+        ResultSet rs = ps.executeQuery();
 
-        } catch (SQLException e) {
-            System.out.println("Error buscar nombre: " + e);
+        if (rs.next()) {
+            return obtenerProducto(rs);
         }
-        return null;
+
+    } catch (SQLException e) {
+        System.out.println("Error buscar nombre: " + e);
+    }
+
+    return null;
         // Consulta por nombre exacto
     }
     
@@ -203,6 +227,7 @@ public class ProductoDAO {
             ps.setInt(6, p.getIdCategoria());
             ps.setInt(7, p.getIdProveedor());
             ps.setInt(8, p.getIdProducto());
+            
 
             ps.executeUpdate();
             return true;
@@ -237,6 +262,22 @@ public class ProductoDAO {
     }
 
      // Descuenta stock después de una venta
+    public boolean actualizarStockYEstado(int stock, int id) {
+    String sql = "UPDATE Producto SET Stock = ?, " +
+                 "Estado = CASE WHEN ? = 0 THEN 'Inactivo' ELSE 'Activo' END " +
+                 "WHERE ID_Producto = ?";
+    try {
+        Connection con = conectar.getConexion();
+        PreparedStatement ps = con.prepareStatement(sql);
+        ps.setInt(1, stock);
+        ps.setInt(2, stock);
+        ps.setInt(3, id);
+        return ps.executeUpdate() > 0;
+    } catch (Exception e) {
+        System.out.println("Error al actualizar stock: " + e);
+        return false;
+    }
+}
     public boolean descontarStock(int cantidad, int id) {
 
         String sql = "UPDATE Producto SET Stock = Stock - ? WHERE [ID_Producto] = ?";
@@ -264,8 +305,14 @@ public class ProductoDAO {
 
         List<Producto> lista = new ArrayList<>();
 
-        String sql = "SELECT * FROM Producto "
-                + "WHERE [ID_Proveedor] = ? AND [Id_Categoria] = ?";
+      String sql = "SELECT p.ID_Producto, p.Nom_Prod, " +
+             "c.Nombre_Cat AS Categoria, " +
+             "pr.Nom_Prov AS Proveedor, " +
+             "p.Codigo_Barras, " +   
+             "p.Precio, p.Stock, p.Stock_Min " +
+             "FROM Producto p " +
+             "INNER JOIN Categoria c ON p.Id_Categoria = c.Id_Categoria " +
+             "INNER JOIN Proveedor pr ON p.ID_Proveedor = pr.ID_Proveedor";
 
         try (
             Connection con = conectar.getConexion();
@@ -288,4 +335,62 @@ public class ProductoDAO {
         return lista;
     }
     // Filtra productos según ambos datos
+    public List<Producto> buscarPorFiltros(String proveedor, String categoria, String estado) {
+
+    List<Producto> lista = new ArrayList<>();
+
+    String sql = "SELECT p.ID_Producto, p.Nom_Prod, " +
+             "c.Nombre_Cat AS Categoria, " +
+             "pr.Nom_Prov AS Proveedor, " +
+             "p.Codigo_Barras, " +
+             "p.Precio, p.Stock, p.Stock_Min, " +
+             "p.Estado " +
+             "FROM Producto p " +
+             "INNER JOIN Categoria c ON p.Id_Categoria = c.Id_Categoria " +
+             "INNER JOIN Proveedor pr ON p.ID_Proveedor = pr.ID_Proveedor " +
+             "WHERE 1=1";
+
+   if (!proveedor.equals("Seleccionar Proveedor")) {
+    sql += " AND pr.Nom_Prov = ?";
+}
+
+if (!categoria.equals("Seleccionar Categoría")) {
+    sql += " AND c.Nombre_Cat = ?";
+}
+
+if (!estado.equals("Seleccionar Estado")) {
+    sql += " AND p.Estado = ?";
+}
+
+    try {
+        Connection con = conectar.getConexion();
+        PreparedStatement ps = con.prepareStatement(sql);
+
+        int index = 1;
+
+        if (!proveedor.equals("Seleccionar Proveedor")) {
+            ps.setString(index++, proveedor);
+        }
+
+        if (!categoria.equals("Seleccionar Categoría")) {
+            ps.setString(index++, categoria);
+        }
+
+        if (!estado.equals("Seleccionar Estado")) {
+            ps.setString(index++, estado);
+        }
+
+        ResultSet rs = ps.executeQuery();
+
+        while (rs.next()) {
+            lista.add(obtenerProducto(rs));
+        }
+
+    } catch (Exception e) {
+        System.out.println("Error filtros: " + e);
+    }
+
+    return lista; // 👈 ESTE TE FALTABA
+}
+    
 }
