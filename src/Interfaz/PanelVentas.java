@@ -13,8 +13,11 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import Modelo.Empleado;
+import java.awt.Image;
 import javax.swing.JTextField;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
@@ -47,6 +50,7 @@ private boolean actualizandoCombo = false;
     llenarComboProductos();
     activarAutocompletadoProducto();
     activarBusquedaPorCodigo();
+    
 }
     /**
      * Llena el combo con productos disponibles.
@@ -115,17 +119,14 @@ private boolean actualizandoCombo = false;
     });
 }
     private void seleccionarProductoDelCombo() {
-    if (VentasCBProd.getSelectedItem() == null) {
-        if (VentasCBProd.getItemCount() == 1) {
-            VentasCBProd.setSelectedIndex(0);
-        } else {
-            return;
-        }
+    if (VentasCBProd.getItemCount() == 0) {
+        return;
     }
 
-    String nombre = VentasCBProd.getSelectedItem().toString().trim();
+    String seleccionado = VentasCBProd.getItemAt(0);
+    VentasCBProd.setSelectedItem(seleccionado);
 
-    Producto p = pDao.buscarPorNombre(nombre);
+    Producto p = pDao.buscarPorNombre(seleccionado);
 
     if (p != null) {
         cargarProductoEnCampos(p);
@@ -263,7 +264,7 @@ private boolean actualizandoCombo = false;
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(98, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -373,7 +374,7 @@ private boolean actualizandoCombo = false;
         jPanel7.setLayout(jPanel7Layout);
         jPanel7Layout.setHorizontalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGap(0, 47, Short.MAX_VALUE)
         );
         jPanel7Layout.setVerticalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -396,16 +397,16 @@ private boolean actualizandoCombo = false;
                         .addComponent(VentasBTCanVenta, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(VentasBTFinVenta, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(25, 25, 25)
+                        .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(VentasBTFinVenta)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGap(61, 61, 61)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(VentaBTTicket)
                             .addGroup(jPanel3Layout.createSequentialGroup()
                                 .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(lblTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -430,11 +431,11 @@ private boolean actualizandoCombo = false;
                         .addComponent(VentasBTAgregarPro)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(VentasBTEliminarProd))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 541, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addGap(23, 23, 23))
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(358, 358, 358))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -530,45 +531,69 @@ private boolean actualizandoCombo = false;
         JOptionPane.showMessageDialog(null, "Selecciona un producto");
         return;
     }
+
     if (VentaCantidad.getText().trim().isEmpty()) {
         JOptionPane.showMessageDialog(null, "Ingresa la cantidad");
         return;
     }
+
     int cant;
+
     try {
         cant = Integer.parseInt(VentaCantidad.getText().trim());
     } catch (NumberFormatException e) {
         JOptionPane.showMessageDialog(null, "La cantidad debe ser un número entero");
         return;
     }
+
     if (cant <= 0) {
         JOptionPane.showMessageDialog(null, "La cantidad debe ser mayor a cero");
         return;
     }
+
     String nombre = VentasCBProd.getSelectedItem().toString().trim();
     Producto p = pDao.buscarPorNombre(nombre);
+
     if (p == null) {
         JOptionPane.showMessageDialog(null, "Producto no encontrado");
         return;
     }
+
     int cantidadYaAgregada = obtenerCantidadEnTabla(p.getCodigoBarras());
+
     if ((cantidadYaAgregada + cant) > p.getStock()) {
-        JOptionPane.showMessageDialog(null, 
-            "Stock insuficiente. Disponible: " + (p.getStock() - cantidadYaAgregada));
+        JOptionPane.showMessageDialog(null,
+                "Stock insuficiente. Disponible: " + (p.getStock() - cantidadYaAgregada));
         return;
     }
-    double precio = (cant >= 10) ? p.getPrecioMayoreo() : p.getPrecio();
-    double subtotal = cant * precio;
+
+    double subtotal;
+
+    if (p.getPrecioMayoreo() > 0 &&
+        p.getCantidadMayoreo() > 0 &&
+        cant >= p.getCantidadMayoreo()) {
+
+        int paquetes = cant / p.getCantidadMayoreo();
+        int sobrantes = cant % p.getCantidadMayoreo();
+
+        subtotal = (paquetes * p.getPrecioMayoreo()) + (sobrantes * p.getPrecio());
+
+    } else {
+        subtotal = cant * p.getPrecio();
+    }
+
+    double precioMostrado = subtotal / cant;
 
     Object[] fila = new Object[5];
     fila[0] = p.getCodigoBarras();
     fila[1] = p.getNomProd();
     fila[2] = cant;
-    fila[3] = precio;
+    fila[3] = precioMostrado;
     fila[4] = subtotal;
 
     modeloVentas.insertRow(0, fila);
     calcularTotal();
+
     VentaCantidad.setText("");
     VentasCod.setText("");
     VentasPrecio.setText("");
@@ -710,7 +735,7 @@ private boolean actualizandoCombo = false;
     private javax.swing.JTable jTable1;
     private javax.swing.JLabel lblTotal;
     // End of variables declaration//GEN-END:variables
- private int obtenerCantidadEnTabla(String codigoBarras) {
+private int obtenerCantidadEnTabla(String codigoBarras) {
     int cantidad = 0;
 
     for (int i = 0; i < jTable1.getRowCount(); i++) {
@@ -728,7 +753,7 @@ private boolean actualizandoCombo = false;
 
     return cantidad;
 }
-   private void limpiarVentaCompleta() {
+private void limpiarVentaCompleta() {
 
     modeloVentas = (DefaultTableModel) jTable1.getModel();
     modeloVentas.setRowCount(0);
@@ -745,4 +770,3 @@ private boolean actualizandoCombo = false;
     VentasCBProd.requestFocus();
 }
 }
-

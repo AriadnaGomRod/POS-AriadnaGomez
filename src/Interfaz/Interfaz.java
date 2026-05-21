@@ -6,27 +6,30 @@ import javax.swing.JPanel;
 import java.util.List;
 import java.time.LocalDate;
 import Modelo.Empleado;
+import java.awt.Image;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 
 public class Interfaz extends javax.swing.JFrame {
   Empleado usuarioActual;
     Empleado usuarioLogueado;
 
-    // Constructor Principal
 public Interfaz(Empleado emp) {
     initComponents();
+    setExtendedState(javax.swing.JFrame.MAXIMIZED_BOTH);
     this.usuarioLogueado = emp;
 
     IntUsuario.setText(emp.getNombre());
     IntRol.setText(emp.getRol());
     IntFecha.setText(LocalDate.now().toString());
 
-    // CONTROL DE PERMISOS
     if (!emp.getRol().equalsIgnoreCase("Administrador")) {
 
         BCategorias.setVisible(false);
         BProveedor.setVisible(false);
         BUsuarios.setVisible(false);
-
         jLabel15.setVisible(false);
         jLabel16.setVisible(false);
         jLabel17.setVisible(false);
@@ -34,32 +37,38 @@ public Interfaz(Empleado emp) {
 
     cambiarPanel(new PanelInicio(usuarioLogueado));
 }
-
-    // Constructor por defecto para evitar errores de NetBeans
     public Interfaz() {
         initComponents();
+        setExtendedState(javax.swing.JFrame.MAXIMIZED_BOTH);
         cambiarPanel(new PanelInicio(usuarioLogueado));
+        ponerImagen(jLabel10, "assets/Imagenes/2.png");
+        ponerImagen(jLabel11, "assets/Imagenes/1.png");
+        ponerImagen(jLabel12, "assets/Imagenes/3.png");
+        ponerImagen(jLabel13, "assets/Imagenes/4.png");
+        ponerImagen(jLabel14, "assets/Imagenes/5.png");
+        ponerImagen(jLabel15, "assets/Imagenes/6.png");
+        ponerImagen(jLabel16, "assets/Imagenes/7.png");
+        ponerImagen(jLabel17, "assets/Imagenes/8.png");
     }
 
-    // Método universal para cambiar de sección
     public void cambiarPanel(JPanel panel) {
-        panel.setSize(PanelContenido.getSize());
-        panel.setLocation(0, 0);
-        
-        PanelContenido.removeAll();
-        PanelContenido.add(panel);
-        PanelContenido.repaint();
-        PanelContenido.revalidate();
-    }
+    panel.setSize(PanelContenido.getWidth(), PanelContenido.getHeight());
+    panel.setLocation(0, 0);
+
+    PanelContenido.removeAll();
+
+    PanelContenido.setLayout(new java.awt.BorderLayout());
+    PanelContenido.add(panel, java.awt.BorderLayout.CENTER);
+
+    PanelContenido.revalidate();
+    PanelContenido.repaint();
+}
 private String determinarTurnoAutomatico() {
-    // Obtenemos la hora actual (0-23) y el minuto
     java.util.Calendar cal = java.util.Calendar.getInstance();
     int hora = cal.get(java.util.Calendar.HOUR_OF_DAY);
     int minuto = cal.get(java.util.Calendar.MINUTE);
-
-    // Convertimos todo a minutos totales desde las 00:00 para comparar fácil
     int tiempoActual = (hora * 60) + minuto;
-    int corteMinutos = (14 * 60) + 40; // 14:40 (2:40 PM)
+    int corteMinutos = (14 * 60) + 40;
 
     if (tiempoActual < corteMinutos) {
         return "Matutino";
@@ -285,22 +294,6 @@ private String determinarTurnoAutomatico() {
             }
         });
 
-        jLabel10.setText("jLabel10");
-
-        jLabel11.setText("jLabel11");
-
-        jLabel12.setText("jLabel12");
-
-        jLabel13.setText("jLabel13");
-
-        jLabel14.setText("jLabel14");
-
-        jLabel15.setText("jLabel15");
-
-        jLabel16.setText("jLabel16");
-
-        jLabel17.setText("jLabel17");
-
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -418,81 +411,49 @@ private String determinarTurnoAutomatico() {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
     private void CerrarSesionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CerrarSesionActionPerformed
-    // Creamos una nueva instancia del Login
-    Login log = new Login();
-    log.setVisible(true);
-    
-    // Cerramos la ventana actual (el menú principal)
-    this.dispose();
+int opcion = JOptionPane.showConfirmDialog(
+            this,
+            "¿Deseas cerrar sesión?",
+            "Cerrar sesión",
+            JOptionPane.YES_NO_OPTION
+    );
 
+    if (opcion == JOptionPane.YES_OPTION) {
+        Login login = new Login();
+        login.setVisible(true);
+        this.dispose();
+    }
     }//GEN-LAST:event_CerrarSesionActionPerformed
-/**
- * Botón Inicio.
- * Muestra el panel principal.
- */
     private void BInicioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BInicioActionPerformed
         cambiarPanel(new PanelInicio());
     }//GEN-LAST:event_BInicioActionPerformed
-/**
- * Botón Ventas.
- * Abre el panel de ventas.
- */
     private void BVentasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BVentasActionPerformed
       cambiarPanel(new PanelVentas(usuarioLogueado));
     }//GEN-LAST:event_BVentasActionPerformed
-/**
- * Botón Inventario.
- * Abre el panel de inventario.
- */
     private void BInventarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BInventarioActionPerformed
         cambiarPanel(new PanelInventario());
     }//GEN-LAST:event_BInventarioActionPerformed
-/**
- * Botón Productos.
- * Abre el panel de productos.
- */
     private void BProductosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BProductosActionPerformed
         cambiarPanel(new PanelProductos());
     }//GEN-LAST:event_BProductosActionPerformed
-
-/**
- * Botón Reportes.
- * Abre el panel de reportes.
- */
     private void BReportesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BReportesActionPerformed
     if (usuarioLogueado.getRol().equalsIgnoreCase("Administrador")) {
-
         cambiarPanel(new PanelReportes());
 
     } else {
 
-        // Cambia la línea del error por esta:
 cambiarPanel(new REmpleado(
     usuarioLogueado.getNombre(), 
-    determinarTurnoAutomatico() // Aquí usamos el cálculo automático
-));
+    determinarTurnoAutomatico()));
     }
     }//GEN-LAST:event_BReportesActionPerformed
-/**
- * Botón Categorías.
- * Abre el panel de categorías.
- */
     private void BCategoriasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BCategoriasActionPerformed
         cambiarPanel(new PanelCategoria());
     }//GEN-LAST:event_BCategoriasActionPerformed
-/**
- * Botón Proveedor.
- * Abre el panel de proveedores.
- */
     private void BProveedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BProveedorActionPerformed
        cambiarPanel(new PanelProveedor());
     }//GEN-LAST:event_BProveedorActionPerformed
-/**
- * Botón Usuarios.
- * Abre el panel de usuarios.
- */
     private void BUsuariosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BUsuariosActionPerformed
         cambiarPanel(new PanelUsuarios());
     }//GEN-LAST:event_BUsuariosActionPerformed
@@ -564,4 +525,18 @@ cambiarPanel(new REmpleado(
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     // End of variables declaration//GEN-END:variables
+private void ponerImagen(JLabel label, String ruta) {
+
+    ImageIcon icono = new ImageIcon(ruta);
+
+    Icon imagen = new ImageIcon(
+            icono.getImage().getScaledInstance(
+                    label.getWidth(),
+                    label.getHeight(),
+                    Image.SCALE_SMOOTH
+            )
+    );
+
+    label.setIcon(imagen);
+}
 }

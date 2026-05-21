@@ -21,6 +21,7 @@ private String proveedor;
 private String categoria;
 private String estado;
 private double precioMayoreo;
+private int cantidadMayoreo;
 
     //Constructor
     public Producto() {
@@ -30,7 +31,7 @@ private double precioMayoreo;
 
   public Producto(int idProducto, String codigoBarras, String nomProd, double precio,
                 int stock, int stockMin, int idCat,
-                String proveedor, String categoria, String estado, double precioMayoreo) {
+                String proveedor, String categoria, String estado, double precioMayoreo, int cantidadMayoreo) {
 
     this.idProducto = idProducto;
     this.codigoBarras = codigoBarras;
@@ -43,6 +44,7 @@ private double precioMayoreo;
     this.categoria = categoria;
     this.estado = estado;
     this.precioMayoreo = precioMayoreo;
+    this.cantidadMayoreo = cantidadMayoreo;
 }
 
 
@@ -141,6 +143,15 @@ private double precioMayoreo;
 public void setPrecioMayoreo(double precioMayoreo) {
     this.precioMayoreo = precioMayoreo;
 }
+
+    public int getCantidadMayoreo() {
+        return cantidadMayoreo;
+    }
+
+    public void setCantidadMayoreo(int cantidadMayoreo) {
+        this.cantidadMayoreo = cantidadMayoreo;
+    }
+
     
     @Override
 public String toString() {

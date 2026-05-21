@@ -2,6 +2,9 @@ package Modelo;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.BufferedWriter;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import javax.swing.JTable;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -87,42 +90,67 @@ public class Reportes {
         }
     }
        // Genera reporte individual por empleado
-    public void exportarReporteEmpleado(JTable tabla, String empleado, String fecha, String turno, String totalVendido) {
+    public void exportarReporteEmpleado(JTable tabla, String empleado, String fecha, String turno, String total) {
+
     JFileChooser chooser = new JFileChooser();
-    chooser.setDialogTitle("Guardar Reporte de Turno");
+    chooser.setDialogTitle("Guardar reporte empleado");
+    chooser.setSelectedFile(new File("Reporte_Turno_Empleado.xls"));
+
+    if (chooser.showSaveDialog(null) != JFileChooser.APPROVE_OPTION) {
+        return;
+    }
+
+    File archivo = chooser.getSelectedFile();
+
+    if (!archivo.getName().toLowerCase().endsWith(".xls")) {
+        archivo = new File(archivo.getAbsolutePath() + ".xls");
+    }
     
-    if (chooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
-        File archivo = new File(chooser.getSelectedFile().toString() + "_Reporte_Turno.csv");
-        
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(archivo))) {
-            // Escribimos los datos informativos del encabezado
-            bw.write("REPORTE DE TURNO DEL EMPLEADO"); bw.newLine();
-            bw.write("Empleado:," + empleado); bw.newLine();
-            bw.write("Fecha:," + fecha); bw.newLine();
-            bw.write("Turno:," + turno); bw.newLine();
-            bw.write("Total Vendido:,$" + totalVendido); bw.newLine();
-            bw.newLine();
+    try (PrintWriter pw = new PrintWriter(new OutputStreamWriter(
+            new FileOutputStream(archivo), "UTF-8"))) {
 
-            // Escribimos los nombres de las columnas de la tabla
-            for (int i = 0; i < tabla.getColumnCount(); i++) {
-                bw.write(tabla.getColumnName(i) + (i == tabla.getColumnCount() - 1 ? "" : ","));
-            }
-            bw.newLine();
+        pw.println("<html><head><meta charset='UTF-8'>");
+        pw.println("<style>");
+        pw.println("body{font-family:Calibri,Arial;}");
+        pw.println("h1{background:#ff9fbd;text-align:center;padding:12px;}");
+        pw.println(".info{background:#ccffcc;padding:8px;margin-bottom:15px;font-weight:bold;}");
+        pw.println("table{border-collapse:collapse;width:100%;}");
+        pw.println("th{background:#4f81bd;color:white;border:1px solid #000;padding:6px;}");
+        pw.println("td{border:1px solid #999;padding:5px;}");
+        pw.println("</style></head><body>");
 
-            // Recorremos la tabla fila por fila para exportar todos los productos vendidos
-            for (int i = 0; i < tabla.getRowCount(); i++) {
-                for (int j = 0; j < tabla.getColumnCount(); j++) {
-                    Object valor = tabla.getValueAt(i, j);
-                    bw.write(String.valueOf(valor != null ? valor : "") + (j == tabla.getColumnCount() - 1 ? "" : ","));
-                }
-                bw.newLine();
-            }
+        pw.println("<h1>REPORTE DE TURNO DEL EMPLEADO</h1>");
 
-            JOptionPane.showMessageDialog(null, "¡Reporte exportado con éxito!");
+        pw.println("<div class='info'>");
+        pw.println("Empleado: " + empleado + "<br>");
+        pw.println("Fecha: " + fecha + "<br>");
+        pw.println("Turno: " + turno + "<br>");
+        pw.println("Total vendido: " + total);
+        pw.println("</div>");
 
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Error al exportar: " + e.getMessage());
+        pw.println("<table>");
+        pw.println("<tr>");
+        for (int i = 0; i < tabla.getColumnCount(); i++) {
+            pw.println("<th>" + tabla.getColumnName(i) + "</th>");
         }
+        pw.println("</tr>");
+
+        for (int fila = 0; fila < tabla.getRowCount(); fila++) {
+            pw.println("<tr>");
+            for (int col = 0; col < tabla.getColumnCount(); col++) {
+                Object valor = tabla.getValueAt(fila, col);
+                pw.println("<td>" + (valor != null ? valor.toString() : "") + "</td>");
+            }
+            pw.println("</tr>");
+        }
+
+        pw.println("</table>");
+        pw.println("</body></html>");
+
+        JOptionPane.showMessageDialog(null, "Reporte exportado correctamente.");
+
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(null, "Error al exportar: " + e.getMessage());
     }
 }
 }

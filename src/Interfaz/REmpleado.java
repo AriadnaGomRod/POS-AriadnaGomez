@@ -135,7 +135,7 @@ Dao.VentaDAO vDao = new Dao.VentaDAO();
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel1)
-                .addContainerGap(48, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -264,8 +264,8 @@ Dao.VentaDAO vDao = new Dao.VentaDAO();
                             .addComponent(jScrollPane1))
                         .addGap(14, 14, 14))))
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(232, 232, 232))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -299,7 +299,7 @@ Dao.VentaDAO vDao = new Dao.VentaDAO();
                                     .addComponent(jLabel8)
                                     .addComponent(NomEmpleado))))
                         .addGap(32, 32, 32)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 137, Short.MAX_VALUE)))
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 170, Short.MAX_VALUE)))
                 .addGap(12, 12, 12)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnCerrarTurno)
@@ -320,23 +320,23 @@ Dao.VentaDAO vDao = new Dao.VentaDAO();
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, 360, Short.MAX_VALUE)
+                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, 393, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnCerrarTurnoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCerrarTurnoActionPerformed
-    int confirmar = JOptionPane.showConfirmDialog(null, 
-        "¿Seguro que deseas finalizar tu turno?");
+    int opcion = JOptionPane.showConfirmDialog(
+            this,
+            "¿Deseas cerrar sesión?",
+            "Cerrar sesión",
+            JOptionPane.YES_NO_OPTION
+    );
 
-    if (confirmar == JOptionPane.YES_OPTION) {
-
-        Login v = new Login();
-        v.setVisible(true);
-
-        java.awt.Window ventana = javax.swing.SwingUtilities.getWindowAncestor(this);
-        ventana.dispose();
-}
+    if (opcion == JOptionPane.YES_OPTION) {
+        Login login = new Login();
+        login.setVisible(true);
+    }
     }//GEN-LAST:event_btnCerrarTurnoActionPerformed
 
     private void btnExportarEmpleadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportarEmpleadoActionPerformed

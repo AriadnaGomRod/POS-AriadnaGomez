@@ -13,7 +13,7 @@ public class ProductoDAO {
 
     private static final String SELECT_BASE =
             "SELECT p.ID_Producto, p.Codigo_Barras, p.Nom_Prod, p.Precio, " +
-            "p.Precio_Mayoreo, p.Stock, p.Stock_Min, p.Estado, " +
+            "p.Precio_Mayoreo,p.Cantidad_Mayoreo, p.Stock, p.Stock_Min, p.Estado, " +
             "p.Id_Categoria, p.ID_Proveedor, " +
             "c.Nombre_Cat AS Categoria, " +
             "pr.Nom_Prov AS Proveedor " +
@@ -29,6 +29,7 @@ public class ProductoDAO {
         p.setNomProd(rs.getString("Nom_Prod"));
         p.setPrecio(rs.getDouble("Precio"));
         p.setPrecioMayoreo(rs.getDouble("Precio_Mayoreo"));
+        p.setCantidadMayoreo(rs.getInt("Cantidad_Mayoreo"));
         p.setStock(rs.getInt("Stock"));
         p.setStockMin(rs.getInt("Stock_Min"));
         p.setEstado(rs.getString("Estado"));
@@ -80,8 +81,8 @@ public class ProductoDAO {
 
     public boolean registrar(Producto p) {
         String sql = "INSERT INTO Producto " +
-                "(Codigo_Barras, Nom_Prod, Precio, Precio_Mayoreo, Stock, Stock_Min, Id_Categoria, ID_Proveedor, Estado) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                "(Codigo_Barras, Nom_Prod, Precio, Precio_Mayoreo,Cantidad_Mayoreo, Stock, Stock_Min, Id_Categoria, ID_Proveedor, Estado) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (
             Connection con = conectar.getConexion();
@@ -91,11 +92,12 @@ public class ProductoDAO {
             ps.setString(2, p.getNomProd());
             ps.setDouble(3, p.getPrecio());
             ps.setDouble(4, p.getPrecioMayoreo());
-            ps.setInt(5, p.getStock());
-            ps.setInt(6, p.getStockMin());
-            ps.setInt(7, p.getIdCategoria());
-            ps.setInt(8, p.getIdProveedor());
-            ps.setString(9, p.getEstado() == null ? "Activo" : p.getEstado());
+            ps.setInt(5, p.getCantidadMayoreo());
+            ps.setInt(6, p.getStock());
+            ps.setInt(7, p.getStockMin());
+            ps.setInt(8, p.getIdCategoria());
+            ps.setInt(9, p.getIdProveedor());
+            ps.setString(10, p.getEstado() == null ? "Activo" : p.getEstado());
 
             return ps.executeUpdate() > 0;
 
@@ -111,6 +113,7 @@ public class ProductoDAO {
                 "Nom_Prod = ?, " +
                 "Precio = ?, " +
                 "Precio_Mayoreo = ?, " +
+                "Cantidad_Mayoreo = ? "+
                 "Stock = ?, " +
                 "Stock_Min = ?, " +
                 "Id_Categoria = ?, " +
@@ -126,12 +129,13 @@ public class ProductoDAO {
             ps.setString(2, p.getNomProd());
             ps.setDouble(3, p.getPrecio());
             ps.setDouble(4, p.getPrecioMayoreo());
-            ps.setInt(5, p.getStock());
-            ps.setInt(6, p.getStockMin());
-            ps.setInt(7, p.getIdCategoria());
-            ps.setInt(8, p.getIdProveedor());
-            ps.setString(9, p.getEstado());
-            ps.setInt(10, p.getIdProducto());
+            ps.setInt(5, p.getCantidadMayoreo());
+            ps.setInt(6, p.getStock());
+            ps.setInt(7, p.getStockMin());
+            ps.setInt(8, p.getIdCategoria());
+            ps.setInt(9, p.getIdProveedor());
+            ps.setString(10, p.getEstado());
+            ps.setInt(11, p.getIdProducto());
 
             return ps.executeUpdate() > 0;
 
@@ -250,6 +254,7 @@ public class ProductoDAO {
         if (!columna.equals("Stock") &&
             !columna.equals("Precio") &&
             !columna.equals("Precio_Mayoreo") &&
+            !columna.equals("Cantidad_Mayoreo")&&
             !columna.equals("Stock_Min") &&
             !columna.equals("Estado")) {
 
