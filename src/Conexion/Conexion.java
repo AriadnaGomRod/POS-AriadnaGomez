@@ -13,10 +13,10 @@ public class Conexion {
     public Connection getConexion() {
 
         String connectionUrl =
-                "jdbc:sqlserver://DAISY\\DAISYSERVIDOR1;"
+                "jdbc:sqlserver://NUWO;"
                 + "database=Papeleria;"
                 + "user=sa;"
-                + "password=123;"
+                + "password=1234;"
                 + "timeout=30;"
                 + "encrypt=true;trustServerCertificate=true;";
 

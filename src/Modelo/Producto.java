@@ -20,6 +20,8 @@ public class Producto {
 private String proveedor;
 private String categoria;
 private String estado;
+private double precioMayoreo;
+
     //Constructor
     public Producto() {
 
@@ -28,7 +30,7 @@ private String estado;
 
   public Producto(int idProducto, String codigoBarras, String nomProd, double precio,
                 int stock, int stockMin, int idCat,
-                String proveedor, String categoria, String estado) {
+                String proveedor, String categoria, String estado, double precioMayoreo) {
 
     this.idProducto = idProducto;
     this.codigoBarras = codigoBarras;
@@ -37,10 +39,10 @@ private String estado;
     this.stock = stock;
     this.stockMin = stockMin;
     this.idCategoria = idCat;
-
     this.proveedor = proveedor;
     this.categoria = categoria;
     this.estado = estado;
+    this.precioMayoreo = precioMayoreo;
 }
 
 
@@ -132,7 +134,13 @@ private String estado;
     public void setEstado(String estado) {
         this.estado = estado;
     }
-    
+    public double getPrecioMayoreo() {
+    return precioMayoreo;
+}
+
+public void setPrecioMayoreo(double precioMayoreo) {
+    this.precioMayoreo = precioMayoreo;
+}
     
     @Override
 public String toString() {

@@ -1,11 +1,20 @@
 package Interfaz;
 
 import Dao.VentaDAO;
+import Dao.ProductoDAO;
+import Modelo.Producto;
 import Modelo.Reportes;
 import Modelo.Venta;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import Dao.DetalleVentaDAO;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import javax.swing.JFileChooser;
+import javax.swing.JTable;
 
 /**
  *
@@ -15,6 +24,8 @@ public class PanelReportes extends javax.swing.JPanel {
     VentaDAO VDao = new VentaDAO();
     Venta Venta= new Venta();
     DefaultTableModel modelo = new DefaultTableModel();
+    ProductoDAO pDao = new ProductoDAO();
+    DetalleVentaDAO dvDao = new DetalleVentaDAO();
     /**
      * Creates new form PanelReportes
      */
@@ -23,6 +34,7 @@ public class PanelReportes extends javax.swing.JPanel {
         initComponents();
         lblVentasRealizadas.setText("0");
         lblIngresosTotales.setText("0.00");
+        cargarStockBajo();
     }
 
     public void actualizarContadores(double montoNuevo) {
@@ -37,6 +49,21 @@ public class PanelReportes extends javax.swing.JPanel {
             System.out.println("Error al actualizar: " + e.getMessage());
         }
     }
+    private void cargarStockBajo() {
+    DefaultTableModel modeloStock = (DefaultTableModel) jTableStockBajo.getModel();
+    modeloStock.setRowCount(0);
+
+    List<Producto> lista = pDao.listarStockBajo();
+
+    for (Producto p : lista) {
+        Object[] fila = new Object[3];
+        fila[0] = p.getIdProducto();
+        fila[1] = p.getNomProd();
+        fila[2] = p.getStock();
+
+        modeloStock.addRow(fila);
+    }
+}
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -249,10 +276,6 @@ public class PanelReportes extends javax.swing.JPanel {
                             .addComponent(jPanel35, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addGroup(jPanel3Layout.createSequentialGroup()
-                                    .addGap(78, 78, 78)
-                                    .addComponent(jLabel4)
-                                    .addGap(15, 15, 15))
-                                .addGroup(jPanel3Layout.createSequentialGroup()
                                     .addGap(21, 21, 21)
                                     .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                         .addComponent(jLabel9)
@@ -261,8 +284,12 @@ public class PanelReportes extends javax.swing.JPanel {
                                     .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                         .addComponent(jDateChooser1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addComponent(jDateChooser2, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 19, Short.MAX_VALUE)
-                                    .addComponent(btnBuscarReporte))))
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 69, Short.MAX_VALUE)
+                                    .addComponent(btnBuscarReporte))
+                                .addGroup(jPanel3Layout.createSequentialGroup()
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                    .addComponent(jLabel4)
+                                    .addGap(0, 0, Short.MAX_VALUE))))
                         .addGroup(jPanel3Layout.createSequentialGroup()
                             .addGap(29, 29, 29)
                             .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -283,6 +310,11 @@ public class PanelReportes extends javax.swing.JPanel {
                 .addGap(14, 14, 14)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jPanel35, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(26, 26, 26))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
                         .addComponent(BTNuevoTurno)
                         .addGap(19, 19, 19)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -293,26 +325,22 @@ public class PanelReportes extends javax.swing.JPanel {
                             .addComponent(jLabel10)
                             .addComponent(jDateChooser2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(btnBuscarReporte))
-                        .addGap(18, 18, 18)
-                        .addComponent(jLabel4))
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jPanel35, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnExportarStockBajo)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 123, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 38, Short.MAX_VALUE)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnCerrarTurno))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addGap(207, 207, 207)
                         .addComponent(btnReporteCompleto)))
-                .addContainerGap())
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel34Layout = new javax.swing.GroupLayout(jPanel34);
@@ -328,7 +356,7 @@ public class PanelReportes extends javax.swing.JPanel {
             jPanel34Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel34Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, 403, Short.MAX_VALUE)
+                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, 473, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -346,15 +374,62 @@ public class PanelReportes extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel34, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 17, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 109, Short.MAX_VALUE)
                 .addComponent(jLabel1)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnReporteCompletoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReporteCompletoActionPerformed
-    Reportes rep = new Reportes();
-    rep.exportarReporteCompleto(jTableStockBajo, jTableVentas); 
+    JFileChooser chooser = new JFileChooser();
+    chooser.setDialogTitle("Guardar reporte");
+    chooser.setSelectedFile(new File("Reporte_Completo.xls"));
+
+    int opcion = chooser.showSaveDialog(null);
+
+    if (opcion != JFileChooser.APPROVE_OPTION) {
+        return;
+    }
+
+    File archivo = chooser.getSelectedFile();
+
+    if (!archivo.getName().toLowerCase().endsWith(".xls")) {
+        archivo = new File(archivo.getAbsolutePath() + ".xls");
+    }
+
+    try (PrintWriter pw = new PrintWriter(new OutputStreamWriter(
+            new FileOutputStream(archivo), "UTF-8"))) {
+
+        pw.println("<html>");
+        pw.println("<head>");
+        pw.println("<meta charset='UTF-8'>");
+        pw.println("<style>");
+        pw.println("body { font-family: Calibri, Arial; }");
+        pw.println("h1 { background:#ffb6c1; padding:10px; text-align:center; }");
+        pw.println("h2 { background:#87cefa; padding:6px; }");
+        pw.println("table { border-collapse:collapse; width:100%; margin-bottom:25px; }");
+        pw.println("th { background:#4f81bd; color:white; font-weight:bold; border:1px solid #000; padding:6px; }");
+        pw.println("td { border:1px solid #999; padding:5px; }");
+        pw.println("</style>");
+        pw.println("</head>");
+        pw.println("<body>");
+
+        pw.println("<h1>REPORTE GENERAL - PAPELERÍA LA ESCUELITA</h1>");
+
+        pw.println("<h2>Productos con stock bajo</h2>");
+        escribirTablaHTML(pw, jTableStockBajo);
+
+        pw.println("<h2>Reporte de ventas totales</h2>");
+        escribirTablaHTML(pw, jTableVentas);
+
+        pw.println("</body>");
+        pw.println("</html>");
+
+        JOptionPane.showMessageDialog(null, "Reporte exportado correctamente.");
+
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(null, "Error al exportar: " + e.getMessage());
+    }
     }//GEN-LAST:event_btnReporteCompletoActionPerformed
 
     private void btnCerrarTurnoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCerrarTurnoActionPerformed
@@ -385,22 +460,35 @@ private void limpiarPantallaCierre() {
     }//GEN-LAST:event_btnCerrarTurnoActionPerformed
 
     private void btnBuscarReporteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarReporteActionPerformed
-    if (jDateChooser1.getDate() != null && jDateChooser2.getDate() != null) {
-        
-        java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd");
-        String fechaI = sdf.format(jDateChooser1.getDate());
-        String fechaF = sdf.format(jDateChooser2.getDate());
-
-        double[] datos = VDao.obtenerResumenVentas(fechaI, fechaF);
-        
-        lblVentasRealizadas.setText(String.valueOf((int)datos[0])); 
-        lblIngresosTotales.setText("$ " + String.valueOf(datos[1]));
-
-        List<Venta> lista = VDao.filtrarVentasPorFecha(fechaI, fechaF);
-        
-    } else {
+if (jDateChooser1.getDate() == null || jDateChooser2.getDate() == null) {
         JOptionPane.showMessageDialog(null, "Por favor, selecciona un rango de fechas.");
+        return;
     }
+
+    java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd");
+    String fechaI = sdf.format(jDateChooser1.getDate());
+    String fechaF = sdf.format(jDateChooser2.getDate());
+
+    double[] datos = VDao.obtenerResumenVentas(fechaI, fechaF);
+
+    lblVentasRealizadas.setText(String.valueOf((int) datos[0]));
+    lblIngresosTotales.setText(String.format("%.2f", datos[1]));
+
+    DefaultTableModel modeloVentas = (DefaultTableModel) jTableVentas.getModel();
+    modeloVentas.setRowCount(0);
+
+    List<Object[]> lista = dvDao.listarDetallesPorFecha(fechaI, fechaF);
+
+    for (Object[] fila : lista) {
+        modeloVentas.addRow(fila);
+    }
+
+    cargarStockBajo();
+
+    if (lista.isEmpty()) {
+        JOptionPane.showMessageDialog(null, "No se encontraron ventas en ese rango de fechas.");
+    }
+
     }//GEN-LAST:event_btnBuscarReporteActionPerformed
 
     private void btnExportarStockBajoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportarStockBajoActionPerformed
@@ -456,4 +544,23 @@ private void limpiarPantallaCierre() {
     private javax.swing.JLabel lblIngresosTotales;
     private javax.swing.JLabel lblVentasRealizadas;
     // End of variables declaration//GEN-END:variables
-}
+private void escribirTablaHTML(PrintWriter pw, JTable tabla) {
+    pw.println("<table>");
+
+    pw.println("<tr>");
+    for (int i = 0; i < tabla.getColumnCount(); i++) {
+        pw.println("<th>" + tabla.getColumnName(i) + "</th>");
+    }
+    pw.println("</tr>");
+
+    for (int fila = 0; fila < tabla.getRowCount(); fila++) {
+        pw.println("<tr>");
+        for (int col = 0; col < tabla.getColumnCount(); col++) {
+            Object valor = tabla.getValueAt(fila, col);
+            pw.println("<td>" + (valor != null ? valor.toString() : "") + "</td>");
+        }
+        pw.println("</tr>");
+    }
+
+    pw.println("</table>");
+}}

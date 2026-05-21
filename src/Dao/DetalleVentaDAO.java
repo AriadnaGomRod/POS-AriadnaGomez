@@ -64,4 +64,39 @@ public class DetalleVentaDAO {
         // Devuelve los productos relacionados con esa venta
         return lista;
     }
+    public List<Object[]> listarDetallesPorFecha(String fechaInicio, String fechaFin) {
+    List<Object[]> lista = new ArrayList<>();
+
+    String sql = "SELECT v.Id_Venta, p.Nom_Prod, dv.Cantidad, dv.SubTotal " +
+                 "FROM Venta v " +
+                 "INNER JOIN Detalle_Venta dv ON v.Id_Venta = dv.Id_Venta " +
+                 "INNER JOIN Producto p ON dv.ID_Producto = p.ID_Producto " +
+                 "WHERE CONVERT(date, v.Fecha) BETWEEN ? AND ? " +
+                 "ORDER BY v.Id_Venta DESC";
+
+    try {
+        con = conectar.getConexion();
+        ps = con.prepareStatement(sql);
+        ps.setString(1, fechaInicio);
+        ps.setString(2, fechaFin);
+
+        rs = ps.executeQuery();
+
+        while (rs.next()) {
+            Object[] fila = new Object[4];
+
+            fila[0] = rs.getInt("Id_Venta");
+            fila[1] = rs.getString("Nom_Prod");
+            fila[2] = rs.getInt("Cantidad");
+            fila[3] = rs.getDouble("SubTotal");
+
+            lista.add(fila);
+        }
+
+    } catch (SQLException e) {
+        System.out.println("Error al listar detalles por fecha: " + e.toString());
+    }
+
+    return lista;
+}
 }

@@ -13,48 +13,197 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import Modelo.Empleado;
+import javax.swing.JTextField;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 /**
  *
  * @author arigo
  */
 public class PanelVentas extends javax.swing.JPanel {
-    Empleado usuarioActual;
-    // Objetos DAO para consultas y registros
-
+Empleado usuarioActual;
 ProductoDAO pDao = new ProductoDAO();
 VentaDAO vDao = new VentaDAO();
 DetalleVentaDAO dvDao = new DetalleVentaDAO();
 
-    // Modelo de tabla y total acumulado
-
-DefaultTableModel modeloVentas = new DefaultTableModel();
+DefaultTableModel modeloVentas;
 double totalPagar = 0.00;
+private boolean actualizandoCombo = false;
      /**
      * Constructor del panel.
      * Inicializa componentes y carga productos.
      */
   public PanelVentas(Empleado usuario) {
     initComponents();
+
     this.usuarioActual = usuario;
-    llenarComboProductos();
-
-
-
     modeloVentas = (DefaultTableModel) jTable1.getModel();
-    modeloVentas.setRowCount(0); 
+    modeloVentas.setRowCount(0);
+
+    lblTotal.setText("0.00");
+
+    llenarComboProductos();
+    activarAutocompletadoProducto();
+    activarBusquedaPorCodigo();
 }
     /**
      * Llena el combo con productos disponibles.
      */
-public void llenarComboProductos() {
-   List<Producto> lista = pDao.listar(); 
-    VentasCBProd.removeAllItems();      
-    for (Producto p : lista) {
-        VentasCBProd.addItem(p.getNomProd());
+    private void activarAutocompletadoProducto() {
+    JTextField editor = (JTextField) VentasCBProd.getEditor().getEditorComponent();
+
+    editor.addKeyListener(new java.awt.event.KeyAdapter() {
+        @Override
+        public void keyReleased(java.awt.event.KeyEvent e) {
+
+            int tecla = e.getKeyCode();
+
+            if (tecla == java.awt.event.KeyEvent.VK_ENTER) {
+                seleccionarProductoDelCombo();
+                return;
+            }
+
+            if (tecla == java.awt.event.KeyEvent.VK_DOWN ||
+                tecla == java.awt.event.KeyEvent.VK_UP) {
+                return;
+            }
+
+            String texto = editor.getText().trim();
+
+            actualizandoCombo = true;
+            DefaultComboBoxModel<String> modelo = new DefaultComboBoxModel<>();
+
+            if (!texto.isEmpty()) {
+                for (Producto p : pDao.listar()) {
+                    if (p.getNomProd().toLowerCase().contains(texto.toLowerCase())) {
+                        modelo.addElement(p.getNomProd());
+                    }
+                }
+
+                VentasCBProd.setModel(modelo);
+
+                if (modelo.getSize() > 0) {
+                    VentasCBProd.setSelectedIndex(0);
+                    editor.setText(texto);
+                    editor.setCaretPosition(texto.length());
+                    VentasCBProd.showPopup();
+
+                    Producto p = pDao.buscarPorNombre(modelo.getElementAt(0));
+                    if (p != null) {
+                        VentasCod.setText(p.getCodigoBarras());
+                        VentasPrecio.setText(String.valueOf(p.getPrecio()));
+                    }
+
+                } else {
+                    editor.setText(texto);
+                    VentasCod.setText("");
+                    VentasPrecio.setText("");
+                    VentasCBProd.hidePopup();
+                }
+
+            } else {
+                VentasCBProd.setModel(modelo);
+                VentasCod.setText("");
+                VentasPrecio.setText("");
+                VentasCBProd.hidePopup();
+            }
+
+            actualizandoCombo = false;
+        }
+    });
+}
+    private void seleccionarProductoDelCombo() {
+    if (VentasCBProd.getSelectedItem() == null) {
+        if (VentasCBProd.getItemCount() == 1) {
+            VentasCBProd.setSelectedIndex(0);
+        } else {
+            return;
+        }
+    }
+
+    String nombre = VentasCBProd.getSelectedItem().toString().trim();
+
+    Producto p = pDao.buscarPorNombre(nombre);
+
+    if (p != null) {
+        cargarProductoEnCampos(p);
+        VentaCantidad.requestFocus();
     }
 }
+    private void cargarProductoEnCampos(Producto p) {
+    javax.swing.SwingUtilities.invokeLater(() -> {
+        actualizandoCombo = true;
 
+        VentasCBProd.setSelectedItem(p.getNomProd());
+
+        if (!VentasCod.getText().trim().equals(p.getCodigoBarras())) {
+            VentasCod.setText(p.getCodigoBarras());
+        }
+
+        VentasPrecio.setText(String.valueOf(p.getPrecio()));
+
+        actualizandoCombo = false;
+    });
+}
+    private void activarBusquedaPorCodigo() {
+    VentasCod.getDocument().addDocumentListener(new DocumentListener() {
+        public void insertUpdate(DocumentEvent e) {
+            buscarProductoPorCodigo();
+        }
+
+        public void removeUpdate(DocumentEvent e) {
+            buscarProductoPorCodigo();
+        }
+
+        public void changedUpdate(DocumentEvent e) {
+            buscarProductoPorCodigo();
+        }
+    });
+}
+    private void buscarProductoPorCodigo() {
+    if (actualizandoCombo) {
+        return;
+    }
+
+    String codigo = VentasCod.getText().trim();
+
+    if (codigo.isEmpty()) {
+        return;
+    }
+
+    Producto p = pDao.buscarPorCodigo(codigo);
+
+    if (p != null) {
+        cargarProductoEnCampos(p);
+    }
+}
+    private void llenarComboProductos() {
+    actualizandoCombo = true;
+
+    VentasCBProd.removeAllItems();
+
+    for (Producto p : pDao.listar()) {
+        VentasCBProd.addItem(p.getNomProd());
+    }
+
+    VentasCBProd.setSelectedItem("");
+    actualizandoCombo = false;
+}
+    private void calcularTotal() {
+    totalPagar = 0.00;
+
+    for (int i = 0; i < jTable1.getRowCount(); i++) {
+        Object valor = jTable1.getValueAt(i, 4);
+
+        if (valor != null && !valor.toString().isEmpty()) {
+            totalPagar += Double.parseDouble(valor.toString());
+        }
+    }
+
+    lblTotal.setText(String.format("%.2f", totalPagar));
+}
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -373,62 +522,59 @@ public void llenarComboProductos() {
      * Agrega producto a la tabla de venta.
      */
     private void VentasCodActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_VentasCodActionPerformed
-        // Calcula subtotal y agrega fila
-
+ 
     }//GEN-LAST:event_VentasCodActionPerformed
 
     private void VentasBTAgregarProActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_VentasBTAgregarProActionPerformed
-    if (!VentaCantidad.getText().isEmpty() && !VentasPrecio.getText().isEmpty()) {
-        int cant = Integer.parseInt(VentaCantidad.getText());
-        double precio = Double.parseDouble(VentasPrecio.getText());
-        double subtotal = cant * precio;
-        
-        modeloVentas = (DefaultTableModel) jTable1.getModel();
-        
-       String nombre = VentasCBProd.getSelectedItem().toString();
-Producto p = pDao.buscarPorNombre(nombre);
-if (p == null) {
-    JOptionPane.showMessageDialog(null, "Producto no encontrado");
-    return;
-}
-Object[] fila = new Object[5];
-fila[0] = p.getIdProducto(); 
-fila[1] = p.getNomProd();
-fila[2] = cant;
-fila[3] = precio;
-fila[4] = subtotal;
-        
-        modeloVentas.insertRow(0, fila);
-        calcularTotal();
-    } else {
-        JOptionPane.showMessageDialog(null, "Ingresa cantidad y selecciona producto");
+    if (VentasCBProd.getSelectedItem() == null || VentasCBProd.getSelectedItem().toString().trim().isEmpty()) {
+        JOptionPane.showMessageDialog(null, "Selecciona un producto");
+        return;
     }
-}
-    /**
-     * Calcula total de la venta.
-     */
-private void calcularTotal() {
-    totalPagar = 0.00;
-
-    for (int i = 0; i < jTable1.getRowCount(); i++) {
-
-        Object valor = jTable1.getValueAt(i, 4);
-
-        if (valor != null && !valor.toString().isEmpty()) {
-            totalPagar += Double.parseDouble(valor.toString());
-        }
+    if (VentaCantidad.getText().trim().isEmpty()) {
+        JOptionPane.showMessageDialog(null, "Ingresa la cantidad");
+        return;
     }
+    int cant;
+    try {
+        cant = Integer.parseInt(VentaCantidad.getText().trim());
+    } catch (NumberFormatException e) {
+        JOptionPane.showMessageDialog(null, "La cantidad debe ser un número entero");
+        return;
+    }
+    if (cant <= 0) {
+        JOptionPane.showMessageDialog(null, "La cantidad debe ser mayor a cero");
+        return;
+    }
+    String nombre = VentasCBProd.getSelectedItem().toString().trim();
+    Producto p = pDao.buscarPorNombre(nombre);
+    if (p == null) {
+        JOptionPane.showMessageDialog(null, "Producto no encontrado");
+        return;
+    }
+    int cantidadYaAgregada = obtenerCantidadEnTabla(p.getCodigoBarras());
+    if ((cantidadYaAgregada + cant) > p.getStock()) {
+        JOptionPane.showMessageDialog(null, 
+            "Stock insuficiente. Disponible: " + (p.getStock() - cantidadYaAgregada));
+        return;
+    }
+    double precio = (cant >= 10) ? p.getPrecioMayoreo() : p.getPrecio();
+    double subtotal = cant * precio;
 
-    lblTotal.setText(String.valueOf(totalPagar));
-    
-     /**
-     * Elimina producto seleccionado.
-     */
+    Object[] fila = new Object[5];
+    fila[0] = p.getCodigoBarras();
+    fila[1] = p.getNomProd();
+    fila[2] = cant;
+    fila[3] = precio;
+    fila[4] = subtotal;
 
+    modeloVentas.insertRow(0, fila);
+    calcularTotal();
+    VentaCantidad.setText("");
+    VentasCod.setText("");
+    VentasPrecio.setText("");
+    VentasCBProd.setSelectedItem("");
+    VentasCBProd.requestFocus();
     }//GEN-LAST:event_VentasBTAgregarProActionPerformed
-    /**
-     * Elimina producto seleccionado.
-     */
     private void VentasBTEliminarProdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_VentasBTEliminarProdActionPerformed
            // Borra fila seleccionada
         modeloVentas = (DefaultTableModel) jTable1.getModel();
@@ -438,31 +584,22 @@ private void calcularTotal() {
     } else {
         JOptionPane.showMessageDialog(null, "Selecciona una fila de la tabla para eliminar");
     }
-
     }//GEN-LAST:event_VentasBTEliminarProdActionPerformed
-        /**
-     * Cancela la venta actual.
-     */
     private void VentasBTCanVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_VentasBTCanVentaActionPerformed
     modeloVentas = (DefaultTableModel) jTable1.getModel();
     modeloVentas.setRowCount(0);
     VentaCantidad.setText("");
     VentasPrecio.setText("");
-    VentasCBProd.setSelectedIndex(0);
+    VentasCBProd.setSelectedItem("");
+    VentasCod.setText("");
     totalPagar = 0.00;
     lblTotal.setText("0.00"); 
-     // Limpia tabla y campos
-
     JOptionPane.showMessageDialog(null, "Venta cancelada");
     }//GEN-LAST:event_VentasBTCanVentaActionPerformed
-    /**
-     * Finaliza venta y guarda en base de datos.
-     */
     private void VentasBTFinVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_VentasBTFinVentaActionPerformed
     if (jTable1.getRowCount() > 0) {
         Venta v = new Venta();
         v.setTotal(totalPagar);
-        v.setIdEmpleado(1);
         v.setIdEmpleado(usuarioActual.getIdEmpleado());
         int idVenta = vDao.guardarVenta(v);
         
@@ -475,10 +612,10 @@ private void calcularTotal() {
 
                 Producto p = pDao.buscarPorNombre(nombreProd);
 
-if (p == null) {
-    JOptionPane.showMessageDialog(null, "Producto no encontrado: " + nombreProd);
-    continue;
-}
+        if (p == null) {
+             JOptionPane.showMessageDialog(null, "Producto no encontrado: " + nombreProd);
+                continue;
+                }
                 DetalleVenta dv = new DetalleVenta();
                 dv.setIdVenta(idVenta);
                 dv.setIdProducto(p.getIdProducto());
@@ -497,9 +634,6 @@ if (p == null) {
         // Guarda venta, detalle y descuenta stock
 
     }//GEN-LAST:event_VentasBTFinVentaActionPerformed
-    /**
-     * Genera ticket de compra.
-     */
     private void VentaBTTicketActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_VentaBTTicketActionPerformed
         if (jTable1.getRowCount() > 0) {
 
@@ -537,27 +671,20 @@ if (p == null) {
     } else {
         JOptionPane.showMessageDialog(null, "No hay productos para generar el ticket.");
     }
-        // Muestra ticket en pantalla
-
     }//GEN-LAST:event_VentaBTTicketActionPerformed
-    /**
-     * Cambia precio según producto seleccionado.
-     */
-
     private void VentasCBProdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_VentasCBProdActionPerformed
-    if (VentasCBProd.getSelectedItem() != null) {
-        String nombre = VentasCBProd.getSelectedItem().toString();
-Producto p = pDao.buscarPorNombre(nombre);
-
-if (p != null) {
-    VentasPrecio.setText("" + p.getPrecio());
-}
+    if (actualizandoCombo || VentasCBProd.getSelectedItem() == null) {
+        return;
     }
-        // Carga precio automático
-
+    String nombre = VentasCBProd.getSelectedItem().toString().trim();
+    if (nombre.isEmpty()) {
+        return;
+    }
+    Producto p = pDao.buscarPorNombre(nombre);
+    if (p != null) {
+        cargarProductoEnCampos(p);
+    }
     }//GEN-LAST:event_VentasCBProdActionPerformed
-
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton VentaBTTicket;
     private javax.swing.JTextField VentaCantidad;
@@ -583,20 +710,39 @@ if (p != null) {
     private javax.swing.JTable jTable1;
     private javax.swing.JLabel lblTotal;
     // End of variables declaration//GEN-END:variables
-    /**
-     * Limpia todos los datos de la venta.
-     */
-    private void limpiarVentaCompleta() {
+ private int obtenerCantidadEnTabla(String codigoBarras) {
+    int cantidad = 0;
+
+    for (int i = 0; i < jTable1.getRowCount(); i++) {
+        Object codigoValor = jTable1.getValueAt(i, 0);
+        Object cantValor = jTable1.getValueAt(i, 2);
+
+        if (codigoValor != null && cantValor != null) {
+            String codigoTabla = codigoValor.toString();
+
+            if (codigoTabla.equals(codigoBarras)) {
+                cantidad += Integer.parseInt(cantValor.toString());
+            }
+        }
+    }
+
+    return cantidad;
+}
+   private void limpiarVentaCompleta() {
+
     modeloVentas = (DefaultTableModel) jTable1.getModel();
     modeloVentas.setRowCount(0);
+
     VentaCantidad.setText("");
     VentasPrecio.setText("");
-    if (VentasCBProd.getItemCount() > 0) VentasCBProd.setSelectedIndex(0);
+    VentasCod.setText("");
+
+    VentasCBProd.setSelectedItem("");
+
     totalPagar = 0.00;
     lblTotal.setText("0.00");
-    VentasCBProd.requestFocus();
-    // Reinicia tabla, campos y total
 
+    VentasCBProd.requestFocus();
 }
 }
 

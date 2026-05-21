@@ -12,25 +12,28 @@ public class Interfaz extends javax.swing.JFrame {
     Empleado usuarioLogueado;
 
     // Constructor Principal
-    public Interfaz(Empleado emp) {
-        initComponents();
-        this.usuarioLogueado = emp;
-        
-        // Configuración de encabezado
-        IntUsuario.setText(emp.getNombre());
-        IntRol.setText(emp.getRol());
-        IntFecha.setText(LocalDate.now().toString());
-        
-        // Control de permisos por Rol
-        if (!emp.getRol().equalsIgnoreCase("Administrador")) {
-            BCategorias.setEnabled(false);
-            BProveedor.setEnabled(false);
-            BUsuarios.setEnabled(false);
-        }
-        
-        // Panel inicial por defecto
-        cambiarPanel(new PanelInicio(usuarioLogueado));
+public Interfaz(Empleado emp) {
+    initComponents();
+    this.usuarioLogueado = emp;
+
+    IntUsuario.setText(emp.getNombre());
+    IntRol.setText(emp.getRol());
+    IntFecha.setText(LocalDate.now().toString());
+
+    // CONTROL DE PERMISOS
+    if (!emp.getRol().equalsIgnoreCase("Administrador")) {
+
+        BCategorias.setVisible(false);
+        BProveedor.setVisible(false);
+        BUsuarios.setVisible(false);
+
+        jLabel15.setVisible(false);
+        jLabel16.setVisible(false);
+        jLabel17.setVisible(false);
     }
+
+    cambiarPanel(new PanelInicio(usuarioLogueado));
+}
 
     // Constructor por defecto para evitar errores de NetBeans
     public Interfaz() {
@@ -123,14 +126,17 @@ private String determinarTurnoAutomatico() {
         jLabel2.setFont(new java.awt.Font("Verdana", 1, 18)); // NOI18N
         jLabel2.setText("LA ESCUELITA");
 
+        jLabel3.setFont(new java.awt.Font("Verdana", 1, 12)); // NOI18N
         jLabel3.setText("Usuario:");
 
         IntUsuario.setText("jLabel4");
 
+        jLabel5.setFont(new java.awt.Font("Verdana", 1, 12)); // NOI18N
         jLabel5.setText("Rol:");
 
         IntRol.setText("jLabel6");
 
+        jLabel7.setFont(new java.awt.Font("Verdana", 1, 12)); // NOI18N
         jLabel7.setText("Fecha:");
 
         IntFecha.setText("jLabel8");
@@ -155,7 +161,7 @@ private String determinarTurnoAutomatico() {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel2)
                     .addComponent(jLabel1))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 138, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 109, Short.MAX_VALUE)
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(IntUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)

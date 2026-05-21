@@ -7,21 +7,86 @@ import javax.swing.JOptionPane;
  * @author arigo
  */
 public class REmpleado extends javax.swing.JPanel {
+private String nombreEmpleadoActual;
+private String turnoActual;
+
+Dao.DetalleVentaDAO dvDao = new Dao.DetalleVentaDAO();
+Dao.VentaDAO vDao = new Dao.VentaDAO();
 
     // Constructor único que recibe los datos del empleado
     public REmpleado(String nombreEmpleado, String tipoTurno) {
-        initComponents();
-        
-        // Nombre del empleado
-        NomEmpleado.setText(nombreEmpleado);
-        
-        // Fecha actual
-        java.time.LocalDate fechaActual = java.time.LocalDate.now();
-        Fecha.setText(fechaActual.toString());
-        
-        // Turno
-        Turno.setText(tipoTurno);
+    initComponents();
+
+    this.nombreEmpleadoActual = nombreEmpleado;
+    this.turnoActual = tipoTurno;
+
+    NomEmpleado.setText(nombreEmpleado);
+
+    java.time.LocalDate fechaActual = java.time.LocalDate.now();
+    Fecha.setText(fechaActual.toString());
+
+    Turno.setText(tipoTurno);
+
+    cargarReporteEmpleado();
+}
+    private void cargarReporteEmpleado() {
+
+    javax.swing.table.DefaultTableModel modelo =
+            (javax.swing.table.DefaultTableModel)
+                    TablaReporteEmpleado.getModel();
+
+    modelo.setRowCount(0);
+
+    double total = 0;
+    int ventasRealizadas = 0;
+
+    try {
+
+        Conexion.Conexion cn = new Conexion.Conexion();
+
+        java.sql.Connection con = cn.getConexion();
+
+        String sql =
+                "SELECT v.Id_Venta, p.Nom_Prod, dv.Cantidad, dv.SubTotal " +
+                "FROM Venta v " +
+                "INNER JOIN Detalle_Venta dv ON v.Id_Venta = dv.Id_Venta " +
+                "INNER JOIN Producto p ON dv.ID_Producto = p.ID_Producto " +
+                "INNER JOIN Empleado e ON v.Id_Empleado = e.Id_Empleado " +
+                "WHERE e.Nombre = ? " +
+                "AND CAST(v.Fecha AS DATE) = CAST(GETDATE() AS DATE)";
+
+        java.sql.PreparedStatement ps =
+                con.prepareStatement(sql);
+
+        ps.setString(1, nombreEmpleadoActual);
+
+        java.sql.ResultSet rs = ps.executeQuery();
+
+        while (rs.next()) {
+
+            Object[] fila = new Object[4];
+
+            fila[0] = rs.getInt("Id_Venta");
+            fila[1] = rs.getString("Nom_Prod");
+            fila[2] = rs.getInt("Cantidad");
+            fila[3] = rs.getDouble("SubTotal");
+
+            total += rs.getDouble("SubTotal");
+
+            ventasRealizadas++;
+
+            modelo.addRow(fila);
+        }
+
+        Ventas.setText(String.valueOf(ventasRealizadas));
+        TotalVendido.setText("$ " + total);
+
+    } catch (Exception e) {
+
+        JOptionPane.showMessageDialog(null,
+                "Error cargando reporte: " + e.getMessage());
     }
+}
     
     /**
      * This method is called from within the constructor to initialize the form.
@@ -94,7 +159,7 @@ public class REmpleado extends javax.swing.JPanel {
                 {null, null, null, null}
             },
             new String [] {
-                "IDVenta", "ID Producto", "Cantidad", "Total"
+                "ID Venta", "Producto", "Cantidad", "Total"
             }
         ));
         jScrollPane1.setViewportView(TablaReporteEmpleado);

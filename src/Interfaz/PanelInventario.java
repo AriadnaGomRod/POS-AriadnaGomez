@@ -18,7 +18,9 @@ public class PanelInventario extends javax.swing.JPanel {
 ProductoDAO pDao = new ProductoDAO();
 DefaultTableModel modeloInventario = new DefaultTableModel();
 
-public PanelInventario() {
+private String ultimoProveedor = "Seleccionar Proveedor";
+private String ultimaCategoria = "Seleccionar Categoría";
+private String ultimoEstado = "Seleccionar Estado";public PanelInventario() {
     initComponents();
     llenarCombos();
 
@@ -40,6 +42,30 @@ public void listarProductosInventario() {
         ob[5] = lista.get(i).getStock();
         ob[6] = lista.get(i).getStockMin();
         ob[7] = lista.get(i).getCodigoBarras();
+        modeloInventario.addRow(ob);
+    }
+}
+private void cargarTablaConFiltros(String proveedor, String categoria, String estado) {
+
+    List<Producto> lista = pDao.buscarPorFiltros(proveedor, categoria, estado);
+
+    modeloInventario = (DefaultTableModel) jTableInv.getModel();
+    modeloInventario.setRowCount(0);
+
+    Object[] ob = new Object[10];
+
+    for (Producto p : lista) {
+        ob[0] = p.getIdProducto();
+        ob[1] = p.getNomProd();
+        ob[2] = p.getCategoria();
+        ob[3] = p.getPrecio();
+        ob[4] = p.getPrecioMayoreo();
+        ob[5] = p.getProveedor();
+        ob[6] = p.getStock();
+        ob[7] = p.getStockMin();
+        ob[8] = p.getCodigoBarras();
+        ob[9] = p.getEstado();
+
         modeloInventario.addRow(ob);
     }
 }
@@ -172,13 +198,13 @@ private void llenarCombos() {
 
         jTableInv.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null}
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "ID", "Producto", "Categoría", "Precio", "Proveedor", "Stock", "Stock min", "Codigo", "Estado"
+                "ID", "Producto", "Categoría", "Precio", "PrecioMayoreo", "Proveedor", "Stock", "Stock min", "Codigo", "Estado"
             }
         ));
         jScrollPane1.setViewportView(jTableInv);
@@ -250,7 +276,8 @@ private void llenarCombos() {
                             .addGroup(jPanel3Layout.createSequentialGroup()
                                 .addComponent(jLabel5)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(InventarioStock, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(InventarioStock)
+                                .addGap(14, 14, 14)))
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel3Layout.createSequentialGroup()
                                 .addGap(45, 45, 45)
@@ -259,31 +286,32 @@ private void llenarCombos() {
                                 .addGap(31, 31, 31)
                                 .addComponent(jLabel6)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(InventarioPU, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(InventarioPU)
+                                .addGap(34, 34, 34)))
                         .addGap(17, 17, 17)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(InventarioBTPrecio)
                             .addGroup(jPanel3Layout.createSequentialGroup()
                                 .addComponent(jLabel7)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(InventarioPM, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel3Layout.createSequentialGroup()
-                            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(jLabel2)
-                                .addComponent(jLabel3))
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(InventarioCBEstado, 0, 185, Short.MAX_VALUE)
-                                .addComponent(InventarioCBProv, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addGroup(jPanel3Layout.createSequentialGroup()
-                                    .addComponent(jLabel4)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                    .addComponent(InventarioCBCat, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addComponent(InventarioBTBuscar)))
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING)))
+                                .addComponent(InventarioPM)))
+                        .addGap(7, 7, 7))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel3))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(InventarioCBEstado, 0, 185, Short.MAX_VALUE)
+                            .addComponent(InventarioCBProv, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addComponent(jLabel4)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(InventarioCBCat, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(InventarioBTBuscar)))
+                    .addComponent(jScrollPane1))
                 .addGap(17, 17, 17))
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -364,87 +392,92 @@ private void llenarCombos() {
     }// </editor-fold>//GEN-END:initComponents
 
     private void InventarioBTBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_InventarioBTBuscarActionPerformed
-   Object itemProv = InventarioCBProv.getSelectedItem();
-String proveedor = (itemProv != null) ? itemProv.toString() : "Seleccionar Proveedor";
+    Object itemProv = InventarioCBProv.getSelectedItem();
+    String proveedor = (itemProv != null) ? itemProv.toString() : "Seleccionar Proveedor";
 
-Object itemCat = InventarioCBCat.getSelectedItem();
-String categoria = (itemCat != null) ? itemCat.toString() : "Seleccionar Categoría";
+    Object itemCat = InventarioCBCat.getSelectedItem();
+    String categoria = (itemCat != null) ? itemCat.toString() : "Seleccionar Categoría";
 
-Object itemEstado = InventarioCBEstado.getSelectedItem();
-String estado = (itemEstado != null) ? itemEstado.toString() : "Seleccionar Estado";
+    Object itemEstado = InventarioCBEstado.getSelectedItem();
+    String estado = (itemEstado != null) ? itemEstado.toString() : "Seleccionar Estado";
 
-List<Producto> lista = pDao.buscarPorFiltros(proveedor, categoria, estado);
+    ultimoProveedor = proveedor;
+    ultimaCategoria = categoria;
+    ultimoEstado = estado;
 
-    modeloInventario = (DefaultTableModel) jTableInv.getModel();
-    modeloInventario.setRowCount(0);
+    cargarTablaConFiltros(proveedor, categoria, estado);
 
-    Object[] ob = new Object[9];
+    InventarioCBProv.setSelectedItem("Seleccionar Proveedor");
+    InventarioCBCat.setSelectedItem("Seleccionar Categoría");
+    InventarioCBEstado.setSelectedItem("Seleccionar Estado");
 
-    for (Producto p : lista) {
-        ob[0] = p.getIdProducto();
-        ob[1] = p.getNomProd();
-        ob[2] = p.getCategoria();
-        ob[3] = p.getPrecio();
-        ob[4] = p.getProveedor();
-        ob[5] = p.getStock();
-        ob[6] = p.getStockMin();
-        ob[7] = p.getCodigoBarras();
-        ob[8] = p.getEstado();// o lo que tengas
-
-        modeloInventario.addRow(ob);
-    }
+    InventarioStock.setText("");
+    InventarioPU.setText("");
+    InventarioPM.setText("");
     }//GEN-LAST:event_InventarioBTBuscarActionPerformed
 
     private void InventarioBTPrecioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_InventarioBTPrecioActionPerformed
     int fila = jTableInv.getSelectedRow();
-    
-    if (fila != -1) {
-        if (!InventarioPU.getText().isEmpty()) {
-            try {
-                int id = Integer.parseInt(jTableInv.getValueAt(fila, 0).toString());
-                double nuevoPrecio = Double.parseDouble(InventarioPU.getText());
 
-                if (pDao.editarCampos("Precio", nuevoPrecio, id)) {
-                    JOptionPane.showMessageDialog(null, "Precio actualizado correctamente");
-                    
-                    InventarioPU.setText("");
-                    listarProductosInventario(); 
-                } else {
-                    JOptionPane.showMessageDialog(null, "Error al actualizar en la base de datos");
-                }
-                
-            } catch (NumberFormatException e) {
-                JOptionPane.showMessageDialog(null, "Por favor, ingrese un precio válido (ej: 10.50)");
-            }
-        } else {
-            JOptionPane.showMessageDialog(null, "Ingrese el nuevo precio en el cuadro de texto");
-        }
-    } else {
-        JOptionPane.showMessageDialog(null, "Seleccione un producto de la tabla para modificar su precio");
+    if (fila == -1) {
+        JOptionPane.showMessageDialog(null, "Seleccione un producto de la tabla");
+        return;
+    }
 
-}
+    int id = Integer.parseInt(jTableInv.getValueAt(fila, 0).toString());
+
+    if (!InventarioPU.getText().trim().isEmpty()) {
+        double precio = Double.parseDouble(InventarioPU.getText().trim());
+        pDao.editarCampos("Precio", precio, id);
+    }
+
+    if (!InventarioPM.getText().trim().isEmpty()) {
+        double precioMayoreo = Double.parseDouble(InventarioPM.getText().trim());
+        pDao.editarCampos("Precio_Mayoreo", precioMayoreo, id);
+    }
+
+    JOptionPane.showMessageDialog(null, "Precio actualizado correctamente");
+
+    InventarioPU.setText("");
+    InventarioPM.setText("");
+
+    cargarTablaConFiltros(ultimoProveedor, ultimaCategoria, ultimoEstado);
+
     }//GEN-LAST:event_InventarioBTPrecioActionPerformed
 
     private void InventarioBTStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_InventarioBTStockActionPerformed
     int fila = jTableInv.getSelectedRow();
-    if (fila != -1) {
-        int id = Integer.parseInt(jTableInv.getValueAt(fila, 0).toString());
-       String texto = InventarioStock.getText().trim();
 
-if (texto.isEmpty()) {
-    JOptionPane.showMessageDialog(null, "Ingresa un valor en Stock");
-    return;
-}
-
-int stock = Integer.parseInt(texto);
-
-if (pDao.actualizarStockYEstado(stock, id)) {
-    JOptionPane.showMessageDialog(null, "Stock actualizado");
-    listarProductosInventario();
-}
-      
-    } else {
+    if (fila == -1) {
         JOptionPane.showMessageDialog(null, "Seleccione un producto de la tabla");
+        return;
+    }
+
+    String texto = InventarioStock.getText().trim();
+
+    if (texto.isEmpty()) {
+        JOptionPane.showMessageDialog(null, "Ingresa un valor en Stock");
+        return;
+    }
+
+    try {
+        int id = Integer.parseInt(jTableInv.getValueAt(fila, 0).toString());
+        int stock = Integer.parseInt(texto);
+
+        if (stock < 0) {
+            JOptionPane.showMessageDialog(null, "El stock no puede ser negativo");
+            return;
+        }
+
+        if (pDao.actualizarStockYEstado(stock, id)) {
+            JOptionPane.showMessageDialog(null, "Stock actualizado correctamente");
+            InventarioStock.setText("");
+
+            cargarTablaConFiltros(ultimoProveedor, ultimaCategoria, ultimoEstado);
+        }
+
+    } catch (NumberFormatException e) {
+        JOptionPane.showMessageDialog(null, "El stock debe ser un número entero");
     }
     }//GEN-LAST:event_InventarioBTStockActionPerformed
 
