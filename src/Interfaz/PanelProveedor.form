@@ -280,6 +280,9 @@
             <Component class="javax.swing.JTextField" name="txtNombrePr">
             </Component>
             <Component class="javax.swing.JTextField" name="txtTelefonoPr">
+              <Events>
+                <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtTelefonoPrKeyTyped"/>
+              </Events>
             </Component>
             <Container class="javax.swing.JScrollPane" name="jScrollPane2">
               <AuxValues>

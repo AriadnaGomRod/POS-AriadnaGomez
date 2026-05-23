@@ -164,6 +164,12 @@ public void listarProveedores() {
             }
         });
 
+        txtTelefonoPr.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtTelefonoPrKeyTyped(evt);
+            }
+        });
+
         txtDescripcionPr.setColumns(20);
         txtDescripcionPr.setRows(5);
         jScrollPane2.setViewportView(txtDescripcionPr);
@@ -333,6 +339,15 @@ public void listarProveedores() {
         JOptionPane.showMessageDialog(null, "Selecciona una fila primero");
     }
     }//GEN-LAST:event_btnEliminarActionPerformed
+
+    private void txtTelefonoPrKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtTelefonoPrKeyTyped
+        // TODO add your handling code here:
+             char c = evt.getKeyChar();
+        
+        if (!Character.isDigit(c)){
+            evt.consume();
+        }
+    }//GEN-LAST:event_txtTelefonoPrKeyTyped
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

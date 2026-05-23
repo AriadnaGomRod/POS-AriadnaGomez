@@ -258,10 +258,25 @@ private void llenarCombos() {
         jLabel7.setText("Precio Mayoreo:");
 
         InventarioStock.setBackground(new java.awt.Color(255, 238, 111));
+        InventarioStock.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                InventarioStockKeyTyped(evt);
+            }
+        });
 
         InventarioPU.setBackground(new java.awt.Color(255, 238, 111));
+        InventarioPU.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                InventarioPUKeyTyped(evt);
+            }
+        });
 
         InventarioPM.setBackground(new java.awt.Color(255, 238, 111));
+        InventarioPM.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                InventarioPMKeyTyped(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -480,6 +495,33 @@ private void llenarCombos() {
         JOptionPane.showMessageDialog(null, "El stock debe ser un número entero");
     }
     }//GEN-LAST:event_InventarioBTStockActionPerformed
+
+    private void InventarioStockKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_InventarioStockKeyTyped
+        // TODO add your handling code here:
+           char c = evt.getKeyChar();
+        
+        if (!Character.isDigit(c)){
+            evt.consume();
+        }
+    }//GEN-LAST:event_InventarioStockKeyTyped
+
+    private void InventarioPUKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_InventarioPUKeyTyped
+        // TODO add your handling code here:
+           char c = evt.getKeyChar();
+        
+        if (!Character.isDigit(c) && c != '.'){
+            evt.consume();
+        }
+    }//GEN-LAST:event_InventarioPUKeyTyped
+
+    private void InventarioPMKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_InventarioPMKeyTyped
+        // TODO add your handling code here:
+              char c = evt.getKeyChar();
+        
+        if (!Character.isDigit(c) && c != '.'){
+            evt.consume();
+        }
+    }//GEN-LAST:event_InventarioPMKeyTyped
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

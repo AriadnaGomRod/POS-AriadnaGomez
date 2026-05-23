@@ -18,6 +18,17 @@ public class Interfaz extends javax.swing.JFrame {
 
 public Interfaz(Empleado emp) {
     initComponents();
+        ponerImagen(jLabel10, "assets/Imagenes/2.png");
+        ponerImagen(jLabel11, "assets/Imagenes/1.png");
+        ponerImagen(jLabel12, "assets/Imagenes/3.png");
+        ponerImagen(jLabel13, "assets/Imagenes/4.png");
+        ponerImagen(jLabel14, "assets/Imagenes/5.png");
+        ponerImagen(jLabel15, "assets/Imagenes/6.png");
+        ponerImagen(jLabel16, "assets/Imagenes/7.png");
+        ponerImagen(jLabel17, "assets/Imagenes/8.png");
+        ponerImagen(jLabel9, "assets/Imagenes/escuelita.png");
+        setExtendedState(javax.swing.JFrame.MAXIMIZED_BOTH);
+        cambiarPanel(new PanelInicio(usuarioLogueado));
     setExtendedState(javax.swing.JFrame.MAXIMIZED_BOTH);
     this.usuarioLogueado = emp;
 
@@ -39,16 +50,8 @@ public Interfaz(Empleado emp) {
 }
     public Interfaz() {
         initComponents();
-        setExtendedState(javax.swing.JFrame.MAXIMIZED_BOTH);
-        cambiarPanel(new PanelInicio(usuarioLogueado));
-        ponerImagen(jLabel10, "assets/Imagenes/2.png");
-        ponerImagen(jLabel11, "assets/Imagenes/1.png");
-        ponerImagen(jLabel12, "assets/Imagenes/3.png");
-        ponerImagen(jLabel13, "assets/Imagenes/4.png");
-        ponerImagen(jLabel14, "assets/Imagenes/5.png");
-        ponerImagen(jLabel15, "assets/Imagenes/6.png");
-        ponerImagen(jLabel16, "assets/Imagenes/7.png");
-        ponerImagen(jLabel17, "assets/Imagenes/8.png");
+      
+       
     }
 
     public void cambiarPanel(JPanel panel) {
@@ -157,31 +160,30 @@ private String determinarTurnoAutomatico() {
             }
         });
 
-        jLabel9.setText("jLabel9");
-
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel2)
-                    .addComponent(jLabel1))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 109, Short.MAX_VALUE)
-                .addComponent(jLabel3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(IntUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel5)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(IntRol)
-                .addGap(18, 18, 18)
-                .addComponent(jLabel7)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(IntFecha)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addGap(64, 64, 64)
+                        .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(IntUsuario, javax.swing.GroupLayout.DEFAULT_SIZE, 51, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(IntRol, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(IntFecha, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jLabel2))
                 .addGap(31, 31, 31)
                 .addComponent(CerrarSesion, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -189,26 +191,25 @@ private String determinarTurnoAutomatico() {
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
-                        .addGap(12, 12, 12)
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel2))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addContainerGap()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(jLabel3)
-                                    .addComponent(IntUsuario)
-                                    .addComponent(jLabel5)
-                                    .addComponent(IntRol)
-                                    .addComponent(jLabel7)
-                                    .addComponent(IntFecha)
-                                    .addComponent(CerrarSesion, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(8, 8, 8)))))
+                        .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(23, 23, 23)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel3)
+                            .addComponent(IntUsuario)
+                            .addComponent(jLabel5)
+                            .addComponent(IntRol)
+                            .addComponent(jLabel7)
+                            .addComponent(IntFecha)
+                            .addComponent(CerrarSesion, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(24, 24, 24)
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel2)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -268,6 +269,7 @@ private String determinarTurnoAutomatico() {
         BCategorias.setFont(new java.awt.Font("Verdana", 1, 12)); // NOI18N
         BCategorias.setForeground(new java.awt.Color(51, 51, 51));
         BCategorias.setText("Categoría");
+        BCategorias.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
         BCategorias.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 BCategoriasActionPerformed(evt);
@@ -369,7 +371,7 @@ private String determinarTurnoAutomatico() {
         );
         PanelContenidoLayout.setVerticalGroup(
             PanelContenidoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 430, Short.MAX_VALUE)
+            .addGap(0, 407, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);

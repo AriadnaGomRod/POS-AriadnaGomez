@@ -508,6 +508,9 @@
                   <Color blue="6f" green="ee" red="ff" type="rgb"/>
                 </Property>
               </Properties>
+              <Events>
+                <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="InventarioStockKeyTyped"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JTextField" name="InventarioPU">
               <Properties>
@@ -515,6 +518,9 @@
                   <Color blue="6f" green="ee" red="ff" type="rgb"/>
                 </Property>
               </Properties>
+              <Events>
+                <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="InventarioPUKeyTyped"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JTextField" name="InventarioPM">
               <Properties>
@@ -522,6 +528,9 @@
                   <Color blue="6f" green="ee" red="ff" type="rgb"/>
                 </Property>
               </Properties>
+              <Events>
+                <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="InventarioPMKeyTyped"/>
+              </Events>
             </Component>
           </SubComponents>
         </Container>

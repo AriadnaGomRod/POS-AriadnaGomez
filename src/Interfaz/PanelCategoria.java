@@ -118,6 +118,12 @@ public void listarCategorias() {
         jLabel2.setFont(new java.awt.Font("Verdana", 1, 12)); // NOI18N
         jLabel2.setText("Nombre de la categoría:");
 
+        txtNombreCat.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtNombreCatKeyTyped(evt);
+            }
+        });
+
         btnAgregar.setText("Agregar");
         btnAgregar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -289,6 +295,15 @@ public void listarCategorias() {
         JOptionPane.showMessageDialog(null, "Escribe un nombre para la categoría");
     }
     }//GEN-LAST:event_btnAgregarActionPerformed
+
+    private void txtNombreCatKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNombreCatKeyTyped
+        // TODO add your handling code here:
+           char c = evt.getKeyChar();
+        
+        if (!Character.isLetter(c) && c != ' '){
+            evt.consume();
+        }
+    }//GEN-LAST:event_txtNombreCatKeyTyped
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
